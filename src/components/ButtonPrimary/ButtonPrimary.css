@@ -1,0 +1,15 @@
+.btn--primary {
+    font-weight: 600;
+    font-size: var(--fs-14);
+    padding: 8px 16px;
+    border: 0;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background .2s, color .2s;
+    background: var(--color-accent);
+    color: var(--color-black);
+    text-decoration: none;
+}
+.btn--primary:hover {
+    background: var(--color-accent-hover);
+}
