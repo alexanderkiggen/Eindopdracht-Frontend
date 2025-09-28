@@ -2,7 +2,7 @@ import {Link} from "react-router-dom";
 import {useState} from "react";
 import ButtonPrimary from "../ButtonPrimary/ButtonPrimary";
 import ButtonSecondary from "../ButtonSecondary/ButtonSecondary";
-import Logo from "../../assets/images/logo.png";
+import Logo from "../../../public/logo.png";
 import "./Navbar.css";
 
 function Navbar({

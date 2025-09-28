@@ -12,12 +12,12 @@ import NavBar from "./components/NavBar/NavBar";
 import Footer from "./components/Footer/Footer"; // Importeer de Footer component
 
 // Importeer de sociale media logo's hier
-import DiscordLogo from "./assets/images/socials/discord-logo.png";
-import FacebookLogo from "./assets/images/socials/facebook-logo.png";
-import InstagramLogo from "./assets/images/socials/instagram-logo.png";
-import TwitchLogo from "./assets/images/socials/twitch-logo.png";
-import XLogo from "./assets/images/socials/x-logo.png";
-import YoutubeLogo from "./assets/images/socials/youtube-logo.png";
+import DiscordLogo from "../public/Socials/discord-logo.png";
+import FacebookLogo from "../public/Socials/facebook-logo.png";
+import InstagramLogo from "../public/Socials/instagram-logo.png";
+import TwitchLogo from "../public/Socials/twitch-logo.png";
+import XLogo from "../public/Socials/x-logo.png";
+import YoutubeLogo from "../public/Socials/youtube-logo.png";
 
 
 function App() {
