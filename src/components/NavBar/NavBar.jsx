@@ -1,6 +1,5 @@
-import {Link} from "react-router-dom";
-import {useState} from "react";
-import ButtonPrimary from "../ButtonPrimary/ButtonPrimary";
+import { Link } from "react-router-dom";
+import { useState } from "react";
 import ButtonSecondary from "../ButtonSecondary/ButtonSecondary";
 import Logo from "../../../public/logo.png";
 import "./Navbar.css";
@@ -13,7 +12,7 @@ function Navbar({
                     ButtonSecondaryChildren,
                     ButtonSecondaryTo,
                     ButtonPrimaryChildren,
-                    ButtonPrimaryTo
+                    onLoginClick
                 }) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -31,53 +30,47 @@ function Navbar({
         e.preventDefault();
         const formData = new FormData(e.target);
         const query = formData.get("search");
-        console.log("Zoekterm:", query); // Tijdelijk totdat de zoekbalk werkend is.
+        console.log("Zoekterm:", query);
     };
 
     return (
         <nav className="navbar">
             <div className="navbar__container">
-                {/* Linker kant: logo + navigatie links  + zoekbalk */}
+                {/* Linker kant: logo + navigatie links + zoekbalk */}
                 <div className="navbar__left">
-                    {/* Logo */}
                     <Link to="/" onClick={closeMenu} className="navbar__logo-link">
-                        <img className="navbar__logo" src={Logo} alt="GameFinder logo"/>
+                        <img className="navbar__logo" src={Logo} alt="GameFinder logo" />
                     </Link>
 
-                    {/* Inklabare content mobiel */}
                     <div
                         id="navbar-collapsible"
                         className="navbar__collapsible"
                         data-state={isMenuOpen ? "open" : "closed"}
                     >
-                        {/* Navigatie links */}
                         <ul className="navbar__menu" onClick={closeMenu}>
                             <li>
-                                <Link to={NavigationLinkOneTo} onClick={closeMenu}>{NavigationLinkOneChildren}</Link>
+                                <Link to={NavigationLinkOneTo}>{NavigationLinkOneChildren}</Link>
                             </li>
                             <li>
-                                <Link to={NavigationLinkTwoTo} onClick={closeMenu}>{NavigationLinkTwoChildren}</Link>
+                                <Link to={NavigationLinkTwoTo}>{NavigationLinkTwoChildren}</Link>
                             </li>
                         </ul>
 
-                        {/* Zoekbalk */}
                         <form className="navbar__search" onSubmit={handleSearchSubmit}>
-                            <input
-                                type="text"
-                                name="search"
-                                placeholder="Zoeken in Finder…"
-                            />
+                            <input type="text" name="search" placeholder="Zoeken in Finder…" />
                         </form>
 
-                        {/* Actie knoppen voor mobiel */}
+                        {/* Mobiel acties */}
                         <div className="navbar__actions--mobile" onClick={closeMenu}>
                             <ButtonSecondary to={ButtonSecondaryTo}>{ButtonSecondaryChildren}</ButtonSecondary>
-                            <ButtonPrimary to={ButtonPrimaryTo}>{ButtonPrimaryChildren}</ButtonPrimary>
+                            <button className="btn--primary" onClick={onLoginClick}>
+                                {ButtonPrimaryChildren}
+                            </button>
                         </div>
                     </div>
                 </div>
 
-                {/* Hamburger menu knop (Mobile) */}
+                {/* Hamburger knop */}
                 <button
                     className="navbar__toggle"
                     aria-label="Menu"
@@ -86,10 +79,12 @@ function Navbar({
                     onClick={toggleMenu}
                 ></button>
 
-                {/* Rechter kant: Actie knoppen voor grote schermen  */}
+                {/* Desktop acties */}
                 <div className="navbar__right">
                     <ButtonSecondary to={ButtonSecondaryTo}>{ButtonSecondaryChildren}</ButtonSecondary>
-                    <ButtonPrimary to={ButtonPrimaryTo}>{ButtonPrimaryChildren}</ButtonPrimary>
+                    <button className="btn--primary" onClick={onLoginClick}>
+                        {ButtonPrimaryChildren}
+                    </button>
                 </div>
             </div>
         </nav>

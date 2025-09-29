@@ -104,9 +104,12 @@
     color: var(--color-black);
     font-weight: 500;
     width: 100%;
-    padding: var(--sp-4) var(--sp-4);
-    text-align: center;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
+
 
 /* responsive */
 @media (min-width: 1201px) {
