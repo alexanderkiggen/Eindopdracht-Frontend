@@ -16,7 +16,7 @@
 .login-card {
     background: var(--color-surface);
     border-radius: var(--radius-lg);
-    padding: var(--sp-40);
+    padding: var(--sp-32);
     max-width: 364px;
     width: 100%;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
@@ -66,7 +66,7 @@
 form {
     display: flex;
     flex-direction: column;
-    gap: var(--sp-20);
+    gap: var(--sp-16);
     align-items: flex-start;
 }
 
@@ -155,108 +155,9 @@ form {
     color: var(--color-muted);
 }
 
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.75);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1001;
-    padding: var(--sp-16);
-    backdrop-filter: blur(4px);
-}
-
-.modal-content {
-    background: var(--color-surface);
-    border-radius: var(--radius-lg);
-    padding: var(--sp-40);
-    max-width: 480px;
-    width: 100%;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-    animation: modalSlideIn 0.2s ease-out;
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: var(--sp-16);
-}
-
-.modal-header h2 {
-    font-size: var(--fs-24);
-    color: var(--color-white);
-    margin: 0;
-}
-
-.modal-close {
-    width: 32px;
-    height: 32px;
-    border-radius: var(--radius-md);
-    background: transparent;
-    border: none;
-    color: var(--color-muted);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.2s ease, color 0.2s ease;
-}
-
-.modal-close:hover {
-    background: var(--color-neutral);
-    color: var(--color-white);
-}
-
-.modal-close svg {
-    width: 20px;
-    height: 20px;
-}
-
-.modal-description {
-    color: var(--color-muted);
-    font-size: var(--fs-14);
-    line-height: var(--lh-base);
-    margin-bottom: var(--sp-24);
-}
-
-.modal-content form {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-20);
-}
-
-.modal-content .form-group {
-    margin-bottom: 0;
-}
-
 /* Responsive design */
 @media (max-width: 640px) {
-    .login-card {
-        padding: var(--sp-24);
-    }
-
-    .login-header h1 {
-        font-size: var(--fs-24);
-    }
-
-    .form-row {
-        gap: var(--sp-20);
-    }
-
     .form-footer {
         font-size: var(--fs-12);
-    }
-
-    .modal-content {
-        padding: var(--sp-24);
-    }
-
-    .modal-header h2 {
-        font-size: var(--fs-18);
     }
 }
