@@ -1,11 +1,24 @@
 import { Link } from "react-router-dom";
 import "./ButtonSecondary.css";
 
-function ButtonSecondary({ children, to }) {
+function ButtonSecondary({ children, to, onClick, type = "button" }) {
+    if (to) {
+        return (
+            <Link to={to} className="btn--secondary">
+                {children}
+            </Link>
+        );
+    }
+
     return (
-        <Link to={to} className="btn--secondary">
+        <button
+            onClick={onClick}
+            type={type}
+            className="btn--secondary"
+            disabled={!onClick}
+        >
             {children}
-        </Link>
+        </button>
     );
 }
 
