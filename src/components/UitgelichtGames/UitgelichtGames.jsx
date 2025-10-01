@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import './UitgelichtGames.css';
 
 import ButtonPrimary from "../ButtonPrimary/ButtonPrimary";
@@ -27,26 +28,26 @@ const UitgelichtGames = () => {
             setError(null);
 
             // Haal top rated games op (6 stuks)
-            const response = await fetch(
-                `${BASE_URL}/games?key=${API_KEY}&platforms=187&genres=action&dates=2020-01-01,2025-12-31&ordering=-rating,-added&page_size=6`
+            const response = await axios.get(`${BASE_URL}/games`, {
+                params: {
+                    key: API_KEY,
+                    platforms: 187,
+                    genres: 'action',
+                    dates: '2020-01-01,2025-12-31',
+                    ordering: '-rating,-added',
+                    page_size: 6
+                }
+            });
 
-        );
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-
-            if (data.results && data.results.length > 0) {
-                setGames(data.results);
+            if (response.data.results && response.data.results.length > 0) {
+                setGames(response.data.results);
             } else {
                 throw new Error('Geen games gevonden');
             }
 
         } catch (err) {
             console.error('Error fetching highlighted games:', err);
-            setError(err.message);
+            setError(err.response?.data?.message || err.message);
         } finally {
             setLoading(false);
         }
@@ -64,7 +65,8 @@ const UitgelichtGames = () => {
         // Dit is om later te navigeren naar de specifieke game pagina
     };
 
-console.log(games);
+    console.log(games);
+
     if (loading) {
         return (
             <section className="highlighted-games-section">

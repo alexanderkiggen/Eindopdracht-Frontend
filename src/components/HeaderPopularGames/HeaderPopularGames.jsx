@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
 import './HeaderPopularGames.css';
 import ButtonPrimary from "../ButtonPrimary/ButtonPrimary";
 
@@ -16,12 +17,12 @@ const HeaderPopularGames = () => {
 
     const API_KEY = "1c64704f98f5425d89b4a108cce3c0bb";
     const BASE_URL = 'https://api.rawg.io/api';
-    const CYCLE_DURATION = 25000; // 25 seconden per game als featured game
-    const PROGRESS_UPDATE_INTERVAL = 100; // Update progress elke 100ms
+    const CYCLE_DURATION = 25000;
+    const PROGRESS_UPDATE_INTERVAL = 100;
 
     useEffect(() => {
         if (!API_KEY) {
-            setError('RAWG API key niet gevonden in environment variabelen');
+            setError('RAWG API key niet gevonden');
             setLoading(false);
             return;
         }
@@ -52,28 +53,26 @@ const HeaderPopularGames = () => {
             setError(null);
 
             // Haal all time top 5 games op
-            const response = await fetch(
-                `${BASE_URL}/games?key=${API_KEY}&ordering=-added&page_size=5`
-            );
+            const response = await axios.get(`${BASE_URL}/games`, {
+                params: {
+                    key: API_KEY,
+                    ordering: '-added',
+                    page_size: 5
+                }
+            });
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-
-            if (data.results && data.results.length > 0) {
-                setTopGames(data.results);
+            if (response.data.results && response.data.results.length > 0) {
+                setTopGames(response.data.results);
                 setCurrentGameIndex(0);
                 // Eerste game als default featured game
-                loadFeaturedGame(data.results[0]);
+                loadFeaturedGame(response.data.results[0]);
             } else {
                 throw new Error('Geen games gevonden');
             }
 
         } catch (err) {
             console.error('Error fetching games:', err);
-            setError(err.message);
+            setError(err.response?.data?.message || err.message);
         } finally {
             setLoading(false);
         }
@@ -88,16 +87,14 @@ const HeaderPopularGames = () => {
         }
 
         try {
-            const response = await fetch(
-                `${BASE_URL}/games/${game.id}?key=${API_KEY}`
-            );
-            if (!response.ok) {
-                throw new Error(`Kan details niet ophalen voor ${game.name}`);
-            }
-            const details = await response.json();
+            const response = await axios.get(`${BASE_URL}/games/${game.id}`, {
+                params: {
+                    key: API_KEY
+                }
+            });
 
             // Update featuredGame + opslaan in topGames array
-            const updatedGame = { ...game, description: details.description_raw };
+            const updatedGame = { ...game, description: response.data.description_raw };
             setFeaturedGame(updatedGame);
             setTopGames(prevGames =>
                 prevGames.map(g => g.id === game.id ? updatedGame : g)
