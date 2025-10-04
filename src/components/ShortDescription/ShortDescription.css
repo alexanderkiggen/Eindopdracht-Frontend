@@ -1,0 +1,15 @@
+.short-description {
+    border-bottom: 1px solid var(--color-neutral);
+    padding-bottom: var(--sp-14);
+    font-size: var(--sp-14);
+}
+
+.leesmeer-link {
+    color: var(--color-accent);
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.leesmeer-link:hover {
+    color: var(--color-accent-hover);
+}

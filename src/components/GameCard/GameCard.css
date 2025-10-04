@@ -1,0 +1,118 @@
+/* Game Card */
+.favorieten-card {
+    transition: transform 0.2s ease;
+    position: relative;
+}
+
+.favorieten-card:hover {
+    transform: translateY(-4px);
+}
+
+.favorieten-card__image-wrapper {
+    position: relative;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    margin-bottom: var(--sp-6);
+    cursor: pointer;
+}
+
+.favorieten-card__image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.favorieten-card__favorite-btn {
+    position: absolute;
+    top: var(--sp-12);
+    right: var(--sp-12);
+    background: rgba(0, 0, 0, 0.7);
+    border: none;
+    border-radius: var(--radius-round);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease;
+    z-index: 10;
+}
+
+.favorieten-card__favorite-btn::before {
+    content: '';
+    width: 20px;
+    height: 20px;
+    -webkit-mask: url('public/hearth.svg') no-repeat center / contain;
+    mask: url('public/hearth.svg') no-repeat center / contain;
+    background-color: rgba(255, 255, 255, 0.6);
+    transition: background-color 0.2s ease;
+}
+
+.favorieten-card__favorite-btn--active::before {
+    background-color: var(--color-accent);
+}
+
+.favorieten-card__favorite-btn:hover {
+    background: rgba(0, 0, 0, 0.9);
+    transform: scale(1.1);
+}
+
+.favorieten-card__maker {
+    font-size: var(--sp-12);
+    font-style: italic;
+    color: var(--color-muted);
+    margin: 0 0 var(--sp-4) 0;
+}
+
+.favorieten-card__title {
+    font-size: var(--fs-18);
+    color: var(--color-white);
+    font-weight: 600;
+    margin-bottom: var(--sp-8);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.favorieten-card__description {
+    font-size: 14px;
+    color: var(--color-muted);
+    margin-bottom: var(--sp-16);
+}
+
+.favorieten-card__footer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-12);
+    margin-top: -8px;
+}
+
+.favorieten-card__rating {
+    display: flex;
+    align-items: center;
+}
+
+.favorieten-card__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-16);
+}
+
+.favorieten-card__platforms {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-8);
+}
+
+.favorieten-card__platform-icon {
+    width: 20px;
+    height: 20px;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .favorieten-card__platforms {
+        justify-content: center;
+    }
+}

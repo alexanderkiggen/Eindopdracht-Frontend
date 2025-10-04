@@ -1,71 +1,109 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import axios from 'axios';
 import './FavorietenGebruiker.css';
-import ButtonPrimary from '../../components/ButtonPrimary/ButtonPrimary';
+import ButtonPrimary from '../ButtonPrimary/ButtonPrimary';
+import ButtonSecondary from '../ButtonSecondary/ButtonSecondary';
+import GameCard from "../GameCard/GameCard";
 
 function Favorieten() {
-    const [games, setGames] = useState([]);
+    const [allGames, setAllGames] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 640);
+    const gamesPerPage = 8;
 
     const API_KEY = "1c64704f98f5425d89b4a108cce3c0bb";
     const BASE_URL = 'https://api.rawg.io/api';
 
-    // Favorieten IDs - later kun je dit vervangen met data uit state/context
     const favoriteGames = [
-        { id: 326243, slug: "elden-ring" },
-        { id: 51325, slug: "the-last-of-us-part-2" }
+        {id: 326243, slug: "elden-ring"},
+        {id: 3498, slug: "grand-theft-auto-v"},
+        {id: 41494, slug: "cyberpunk-2077"},
+        {id: 4200, slug: "portal-2"},
+        {id: 5286, slug: "tomb-raider"},
+        {id: 13536, slug: "portal"},
+        {id: 12020, slug: "left-4-dead-2"},
+        {id: 58175, slug: "god-of-war-2"},
+        {id: 28, slug: "red-dead-redemption-2"},
     ];
 
+    const currentPage = parseInt(searchParams.get('page')) || 1;
+
     useEffect(() => {
-        console.log('Component mounted, fetching games...');
+        const handleResize = () => setIsMobile(window.innerWidth <= 640);
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+    useEffect(() => {
         fetchFavoriteGames();
     }, []);
 
     const fetchFavoriteGames = async () => {
-        console.log('fetchFavoriteGames called');
         try {
             setLoading(true);
             setError(null);
 
-            // Fetch elke game individueel
-            const gamePromises = favoriteGames.map(fav => {
-                console.log(`Fetching game: ${fav.slug}`);
-                return fetch(`${BASE_URL}/games/${fav.slug}?key=${API_KEY}`)
-                    .then(res => {
-                        console.log(`Response for ${fav.slug}:`, res.status);
-                        if (!res.ok) throw new Error(`Kan game ${fav.slug} niet ophalen`);
-                        return res.json();
-                    });
-            });
+            const gamePromises = favoriteGames.map(fav =>
+                axios.get(`${BASE_URL}/games/${fav.slug}`, {
+                    params: { key: API_KEY }
+                })
+            );
 
-            const gamesData = await Promise.all(gamePromises);
-            console.log('Games data received:', gamesData);
-            setGames(gamesData);
+            const gamesResponses = await Promise.all(gamePromises);
+            const gamesData = gamesResponses.map(response => response.data);
+            setAllGames(gamesData);
         } catch (err) {
             console.error('Error fetching favorite games:', err);
-            setError(err.message);
+            setError(err.response?.data?.message || err.message);
         } finally {
             setLoading(false);
-            console.log('Loading finished');
         }
     };
 
-    const formatRating = (rating) => {
-        if (!rating) return 'N/A';
-        const percentage = Math.round((rating / 5) * 100);
-        return `${percentage}% Ratings`;
-    };
-
     const removeFavorite = (gameId) => {
-        console.log(`Verwijder favoriet: ${gameId}`);
-        setGames(games.filter(game => game.id !== gameId));
+        const newGames = allGames.filter(game => game.id !== gameId);
+        setAllGames(newGames);
+
+        const newTotalPages = Math.ceil(newGames.length / gamesPerPage);
+        if (currentPage > newTotalPages && newTotalPages > 0) {
+            setSearchParams({ page: newTotalPages });
+        }
     };
 
-    console.log('Render state:', { loading, error, gamesCount: games.length });
+    const totalPages = Math.ceil(allGames.length / gamesPerPage);
+    const indexOfLastGame = currentPage * gamesPerPage;
+    const indexOfFirstGame = indexOfLastGame - gamesPerPage;
+    const currentGames = allGames.slice(indexOfFirstGame, indexOfLastGame);
+
+    const handlePageChange = (pageNumber) => {
+        setSearchParams({ page: pageNumber });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const handlePrevPage = () => {
+        if (currentPage > 1) handlePageChange(currentPage - 1);
+    };
+
+    const handleNextPage = () => {
+        if (currentPage < totalPages) handlePageChange(currentPage + 1);
+    };
+
+    const getPageNumbers = () => {
+        const pages = [];
+        const maxVisible = 4;
+        let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+        let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+        if (endPage - startPage < maxVisible - 1) startPage = Math.max(1, endPage - maxVisible + 1);
+        for (let i = startPage; i <= endPage; i++) pages.push(i);
+        return pages;
+    };
 
     if (loading) {
         return (
-            <div className="favorieten-container">
+            <div className="favorieten-lijst-container">
                 <div className="favorieten-loading">
                     <div>Je favorieten worden geladen...</div>
                 </div>
@@ -75,31 +113,21 @@ function Favorieten() {
 
     if (error) {
         return (
-            <div className="favorieten-container">
+            <div className="favorieten-lijst-container">
                 <div className="favorieten-error">
                     <h2>Fout bij het laden</h2>
                     <p>{error}</p>
-                    <ButtonPrimary onClick={fetchFavoriteGames}>
-                        Opnieuw proberen
-                    </ButtonPrimary>
+                    <ButtonPrimary onClick={fetchFavoriteGames}>Opnieuw proberen</ButtonPrimary>
                 </div>
             </div>
         );
     }
 
-    if (games.length === 0) {
+    if (allGames.length === 0) {
         return (
-            <div className="favorieten-container">
+            <div className="favorieten-lijst-container">
                 <div className="favorieten-empty">
-                    <svg
-                        className="favorieten-empty__icon"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                    >
-                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                    </svg>
+                    <div className="favorieten-empty__icon"></div>
                     <h2>Nog geen favorieten</h2>
                     <p>Begin met het toevoegen van games aan je favorieten!</p>
                 </div>
@@ -108,66 +136,42 @@ function Favorieten() {
     }
 
     return (
-        <div className="favorieten-container">
-            <h1>Mijn Favorieten</h1>
-
+        <div className="favorieten-lijst-container">
             <div className="favorieten-grid">
-                {games.map((game) => (
-                    <div key={game.id} className="favorieten-card">
-                        <div className="favorieten-card__image-wrapper">
-                            <img
-                                src={game.background_image || '/api/placeholder/400/225'}
-                                alt={game.name}
-                                className="favorieten-card__image"
-                                loading="lazy"
-                            />
-                            <button
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    removeFavorite(game.id);
-                                }}
-                                className="favorieten-card__favorite-btn"
-                                aria-label="Verwijder uit favorieten"
-                            >
-                                <svg viewBox="0 0 24 24" fill="#26BBFF" stroke="#26BBFF" strokeWidth="2">
-                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                                </svg>
-                            </button>
-                        </div>
-
-                        <div className="favorieten-card__content">
-                            <h3 className="favorieten-card__title">
-                                {game.name}
-                            </h3>
-
-                            <div className="favorieten-card__rating">
-                                <span className="favorieten-card__rating-text">
-                                    <span className="favorieten-card__rating-icon"></span>
-                                    {formatRating(game.rating)}
-                                </span>
-                            </div>
-
-                            <div className="favorieten-card__genres">
-                                {game.genres?.slice(0, 3).map((genre) => (
-                                    <span key={genre.id} className="favorieten-card__genre">
-                                        {genre.name}
-                                    </span>
-                                ))}
-                            </div>
-
-                            {game.released && (
-                                <p className="favorieten-card__release">
-                                    Release: {new Date(game.released).toLocaleDateString('nl-NL', {
-                                    year: 'numeric',
-                                    month: 'long',
-                                    day: 'numeric'
-                                })}
-                                </p>
-                            )}
-                        </div>
-                    </div>
+                {currentGames.map((game) => (
+                    <GameCard key={game.id} game={game} removeFavorite={removeFavorite} />
                 ))}
             </div>
+
+            {totalPages > 1 && (
+                <div className="favorieten-pagination">
+                    <ButtonSecondary
+                        onClick={handlePrevPage}
+                        disabled={currentPage === 1}
+                    >
+                        {isMobile ? "<" : "Vorige Pagina"}
+                    </ButtonSecondary>
+
+                    <div className="favorieten-pagination__pages">
+                        {getPageNumbers().map(pageNum => (
+                            <button
+                                key={pageNum}
+                                className={`favorieten-pagination__page ${currentPage === pageNum ? 'favorieten-pagination__page--active' : ''}`}
+                                onClick={() => handlePageChange(pageNum)}
+                            >
+                                {pageNum}
+                            </button>
+                        ))}
+                    </div>
+
+                    <ButtonSecondary
+                        onClick={handleNextPage}
+                        disabled={currentPage === totalPages}
+                    >
+                        {isMobile ? ">" : "Volgende Pagina"}
+                    </ButtonSecondary>
+                </div>
+            )}
         </div>
     );
 }

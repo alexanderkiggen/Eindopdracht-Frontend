@@ -1,4 +1,5 @@
 .favorieten-container {
-    text-align: center;
-    padding: 20px;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: var(--sp-48) var(--sp-32);
 }
