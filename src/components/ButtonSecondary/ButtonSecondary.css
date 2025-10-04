@@ -13,3 +13,10 @@
 .btn--secondary:hover {
     background: var(--color-neutral-hover);
 }
+
+.btn--secondary:disabled,
+.btn--secondary--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
