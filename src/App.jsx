@@ -39,7 +39,7 @@ function App() {
     const pageLinks = [
         { to: "/ontdekken", children: "Ontdekken" },
         { to: "/keuzehulp", children: "Keuzehulp" },
-        { to: "/favorieten", children: "Favorieten" },
+        { to: "/favorieten", children: "FavorietenGebruiker" },
         { to: "/", children: "Home" },
     ];
 

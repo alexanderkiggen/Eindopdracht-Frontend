@@ -4,6 +4,7 @@ import './UitgelichtGames.css';
 
 import ButtonPrimary from "../ButtonPrimary/ButtonPrimary";
 import ButtonSecondary from "../ButtonSecondary/ButtonSecondary";
+import RatingGame from "../RatingGame/RatingGame";
 
 const UitgelichtGames = () => {
     const [games, setGames] = useState([]);
@@ -51,13 +52,6 @@ const UitgelichtGames = () => {
         } finally {
             setLoading(false);
         }
-    };
-
-    const formatRating = (rating) => {
-        if (!rating) return 'N/A';
-        // RAWG rating is uit 5, dit convert het naar percentage
-        const percentage = Math.round((rating / 5) * 100);
-        return `${percentage}% Ratings`;
     };
 
     const handleGameClick = (game) => {
@@ -109,9 +103,7 @@ const UitgelichtGames = () => {
                             loading="lazy"
                         />
                         <p>{game.name}</p>
-                        <span className="rating">
-                            {formatRating(game.rating)}
-                        </span>
+                        <RatingGame gameRating={game.rating} />
                     </div>
                 ))}
             </div>

@@ -59,29 +59,6 @@
     margin-bottom: var(--sp-4);
     font-weight: 600;
 }
-
-.highlighted-games-grid .game-card .rating {
-    font-size: var(--fs-12);
-    color: var(--color-accent);
-    display: flex;
-    align-items: center;
-    gap: var(--sp-4);
-    font-weight: 600;
-}
-
-.highlighted-games-grid .game-card .rating::before {
-    content: '';
-    width: 12px;
-    height: 12px;
-    display: inline-block;
-    -webkit-mask: url('public/thumb-up.svg') no-repeat center;
-    -webkit-mask-size: contain;
-    mask: url('public/thumb-up.svg') no-repeat center;
-    mask-size: contain;
-    background-color: var(--color-accent);
-}
-
-
 .view-more {
     text-align: center;
 }
