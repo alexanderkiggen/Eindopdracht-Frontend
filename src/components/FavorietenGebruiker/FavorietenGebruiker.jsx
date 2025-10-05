@@ -5,6 +5,7 @@ import './FavorietenGebruiker.css';
 import ButtonPrimary from '../ButtonPrimary/ButtonPrimary';
 import ButtonSecondary from '../ButtonSecondary/ButtonSecondary';
 import GameCard from "../GameCard/GameCard";
+import favoriteGames from "../../data/favorieten.json";
 
 function Favorieten() {
     const [allGames, setAllGames] = useState([]);
@@ -16,18 +17,6 @@ function Favorieten() {
 
     const API_KEY = "1c64704f98f5425d89b4a108cce3c0bb";
     const BASE_URL = 'https://api.rawg.io/api';
-
-    const favoriteGames = [
-        {id: 326243, slug: "elden-ring"},
-        {id: 3498, slug: "grand-theft-auto-v"},
-        {id: 41494, slug: "cyberpunk-2077"},
-        {id: 4200, slug: "portal-2"},
-        {id: 5286, slug: "tomb-raider"},
-        {id: 13536, slug: "portal"},
-        {id: 12020, slug: "left-4-dead-2"},
-        {id: 58175, slug: "god-of-war-2"},
-        {id: 28, slug: "red-dead-redemption-2"},
-    ];
 
     const currentPage = parseInt(searchParams.get('page')) || 1;
 

@@ -34,7 +34,7 @@ function GameCard({ game, removeFavorite }) {
         <div key={game.id} className="favorieten-card">
             <div
                 className="favorieten-card__image-wrapper"
-                onClick={() => navigate(`/ontdekken?game=${game.slug}`)}
+                onClick={() => navigate(`/informatie/${game.slug}`)}
                 style={{ cursor: "pointer" }}
             >
                 <img
@@ -67,7 +67,7 @@ function GameCard({ game, removeFavorite }) {
                         <RatingGame gameRating={game.rating} />
                     </div>
                     <div className="favorieten-card__actions">
-                        <ButtonPrimary to={`/ontdekken?game=${game.slug}`}>
+                        <ButtonPrimary to={`/informatie/${game.slug}`}>
                             Bekijk de game
                         </ButtonPrimary>
                         <div className="favorieten-card__platforms">
