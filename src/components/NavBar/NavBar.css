@@ -52,14 +52,17 @@
     padding: 0;
 }
 
-.navbar__menu a {
+.navbar__navlink {
     color: var(--color-white);
     text-decoration: none;
     font-size: var(--fs-14);
     margin: 0 5px;
 }
+.navbar__navlink__active {
+    border-bottom: 2px solid var(--color-white);
+}
 
-.navbar__menu a:hover {
+.navbar__navlink:hover {
     border-bottom: 2px solid var(--color-white);
 }
 

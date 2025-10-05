@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
-import { useState } from "react";
+import {Link, NavLink} from "react-router-dom";
+import {useState} from "react";
 import ButtonSecondary from "../ButtonSecondary/ButtonSecondary";
 import Logo from "../../../public/logo.png";
 import "./Navbar.css";
@@ -39,7 +39,7 @@ function Navbar({
                 {/* Linker kant: logo + navigatie links + zoekbalk */}
                 <div className="navbar__left">
                     <Link to="/" onClick={closeMenu} className="navbar__logo-link">
-                        <img className="navbar__logo" src={Logo} alt="GameFinder logo" />
+                        <img className="navbar__logo" src={Logo} alt="GameFinder logo"/>
                     </Link>
 
                     <div
@@ -49,15 +49,19 @@ function Navbar({
                     >
                         <ul className="navbar__menu" onClick={closeMenu}>
                             <li>
-                                <Link to={NavigationLinkOneTo}>{NavigationLinkOneChildren}</Link>
+                                <NavLink
+                                    className={({isActive}) => isActive ? 'navbar__navlink navbar__navlink__active' : 'navbar__navlink'}
+                                    to={NavigationLinkOneTo}>{NavigationLinkOneChildren}</NavLink>
                             </li>
                             <li>
-                                <Link to={NavigationLinkTwoTo}>{NavigationLinkTwoChildren}</Link>
+                                <NavLink
+                                    className={({isActive}) => isActive ? 'navbar__navlink navbar__navlink__active' : 'navbar__navlink'}
+                                    to={NavigationLinkTwoTo}>{NavigationLinkTwoChildren}</NavLink>
                             </li>
                         </ul>
 
                         <form className="navbar__search" onSubmit={handleSearchSubmit}>
-                            <input type="text" name="search" placeholder="Zoeken in Finder…" />
+                            <input type="text" name="search" placeholder="Zoeken in Finder…"/>
                         </form>
 
                         {/* Mobiel acties */}
