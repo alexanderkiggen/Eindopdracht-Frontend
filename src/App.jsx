@@ -78,7 +78,7 @@ function App() {
                     <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/ontdekken" element={<Ontdekken />} />
-                        <Route path="/informatie" element={<Informatie />} />
+                        <Route path="/informatie/:game_slug" element={<Informatie />} />
                         <Route path="/keuzehulp" element={<Keuzehulp />} />
                         <Route path="/favorieten" element={<Favorieten />} />
                     </Routes>
