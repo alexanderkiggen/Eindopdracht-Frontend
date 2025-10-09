@@ -3,3 +3,9 @@
     margin: 0 auto;
     padding: var(--sp-48) var(--sp-32);
 }
+
+.favorieten-lijn {
+    border-bottom: 1px solid var(--color-neutral);
+    margin-bottom: -14px;
+    padding-bottom: var(--sp-16);
+}

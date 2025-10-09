@@ -3,8 +3,7 @@
     padding: var(--sp-48) 0;
 }
 
-/* Loading & Error States */
-.favorieten-loading,
+/* Error States */
 .favorieten-error {
     min-height: 450px;
     display: flex;

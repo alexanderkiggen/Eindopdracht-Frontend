@@ -5,7 +5,8 @@ import './FavorietenGebruiker.css';
 import ButtonPrimary from '../ButtonPrimary/ButtonPrimary';
 import ButtonSecondary from '../ButtonSecondary/ButtonSecondary';
 import GameCard from "../GameCard/GameCard";
-import favoriteGames from "../../data/favorieten.json";
+import { getFavorites, initializeFavoritesFromJSON } from "../../utils/favoritesManager";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner.jsx";
 
 function Favorieten() {
     const [allGames, setAllGames] = useState([]);
@@ -27,13 +28,27 @@ function Favorieten() {
     }, []);
 
     useEffect(() => {
-        fetchFavoriteGames();
+        // Initialiseer favorieten vanuit JSON als localStorage leeg is
+        const initialize = async () => {
+            await initializeFavoritesFromJSON();
+            fetchFavoriteGames();
+        };
+        initialize();
     }, []);
 
     const fetchFavoriteGames = async () => {
         try {
             setLoading(true);
             setError(null);
+
+            // Haal favorieten op uit localStorage
+            const favoriteGames = getFavorites();
+
+            if (favoriteGames.length === 0) {
+                setAllGames([]);
+                setLoading(false);
+                return;
+            }
 
             const gamePromises = favoriteGames.map(fav =>
                 axios.get(`${BASE_URL}/games/${fav.slug}`, {
@@ -93,9 +108,7 @@ function Favorieten() {
     if (loading) {
         return (
             <div className="favorieten-lijst-container">
-                <div className="favorieten-loading">
-                    <div>Je favorieten worden geladen...</div>
-                </div>
+                <LoadingSpinner text={"Favorieten worden geladen"}/>
             </div>
         );
     }
