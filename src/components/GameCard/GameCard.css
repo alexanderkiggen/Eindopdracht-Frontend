@@ -2,6 +2,13 @@
 .favorieten-card {
     transition: transform 0.2s ease;
     position: relative;
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+.favorieten-card * {
+    min-width: 0;
 }
 
 .favorieten-card:hover {
@@ -63,6 +70,9 @@
     font-style: italic;
     color: var(--color-muted);
     margin: 0 0 var(--sp-4) 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .favorieten-card__title {
@@ -73,12 +83,20 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    max-width: 256px;
+    display: block;
 }
+
 
 .favorieten-card__description {
     font-size: 14px;
     color: var(--color-muted);
     margin-bottom: var(--sp-16);
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
 }
 
 .favorieten-card__footer {
