@@ -1,7 +1,7 @@
 import {Link, NavLink} from "react-router-dom";
 import {useState} from "react";
 import ButtonSecondary from "../ButtonSecondary/ButtonSecondary";
-import Logo from "../../../public/logo.png";
+import Logo from "../../assets/logo.png";
 import "./Navbar.css";
 
 function Navbar({

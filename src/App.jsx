@@ -11,12 +11,12 @@ import LoginComponent from './components/Login/Login';
 import NavBar from "./components/NavBar/NavBar";
 import Footer from "./components/Footer/Footer";
 
-import DiscordLogo from "../public/Socials/discord-logo.png";
-import FacebookLogo from "../public/Socials/facebook-logo.png";
-import InstagramLogo from "../public/Socials/instagram-logo.png";
-import TwitchLogo from "../public/Socials/twitch-logo.png";
-import XLogo from "../public/Socials/x-logo.png";
-import YoutubeLogo from "../public/Socials/youtube-logo.png";
+import DiscordLogo from "./assets/Socials/discord.png";
+import FacebookLogo from "./assets/Socials/facebook.png";
+import InstagramLogo from "./assets/Socials/instagram.png";
+import TwitchLogo from "./assets/Socials/twitch.png";
+import XLogo from "./assets/Socials/x.png";
+import YoutubeLogo from "./assets/Socials/youtube.png";
 
 function App() {
     const [isLoginOpen, setIsLoginOpen] = useState(false);

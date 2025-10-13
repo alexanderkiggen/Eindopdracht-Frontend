@@ -30,9 +30,9 @@
     width: 80px;
     height: 80px;
     margin-bottom: var(--sp-32);
-    -webkit-mask: url('public/hearth.svg') no-repeat center;
+    -webkit-mask: url('../../assets/icons/hearth.svg') no-repeat center;
     -webkit-mask-size: contain;
-    mask: url('public/hearth.svg') no-repeat center;
+    mask: url('../../assets/icons/hearth.svg') no-repeat center;
     mask-size: contain;
     background-color: var(--color-accent);
 }

@@ -2,7 +2,7 @@ import {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import './Keuzehulp.css';
 
-import KeuzehulpImg from "../../../public/keuzehulp-img.png"
+import KeuzehulpImg from "../../assets/images/keuzehulp-image.png"
 
 import ShortDescription from "../../components/ShortDescription/ShortDescription";
 import ButtonPrimary from '../../components/ButtonPrimary/ButtonPrimary';

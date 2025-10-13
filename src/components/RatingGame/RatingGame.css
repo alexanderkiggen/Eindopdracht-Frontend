@@ -12,9 +12,9 @@
     width: 12px;
     height: 12px;
     display: inline-block;
-    -webkit-mask: url('public/thumb-up.svg') no-repeat center;
+    -webkit-mask: url('../../assets/icons/thumb-up.svg') no-repeat center;
     -webkit-mask-size: contain;
-    mask: url('public/thumb-up.svg') no-repeat center;
+    mask: url('../../assets/icons/thumb-up.svg') no-repeat center;
     mask-size: contain;
     background-color: var(--color-accent);
 }
