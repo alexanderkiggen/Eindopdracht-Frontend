@@ -3,7 +3,7 @@ import './FilterSection.css';
 
 function FilterSection({ selectedGenre, selectedPlatform, selectedFeatures, onFilterChange }) {
     const [openSection, setOpenSection] = useState(() => {
-        return localStorage.getItem('openSection') || 'platform';
+        return localStorage.getItem('openSection');
     });
     const [checkedFeatures, setCheckedFeatures] = useState([]);
 
