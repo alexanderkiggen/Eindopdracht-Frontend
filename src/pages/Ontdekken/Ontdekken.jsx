@@ -160,7 +160,7 @@ function Ontdekken() {
         <div className="ontdekken-container">
             <div className="ontdekken-header">
                 <h1>Ontdek Games</h1>
-                <ShortDescription
+                <ShortDescription maxLength={65}
                     text="Ontdek visuele hoogtes waar elke game tot leven komt in rijke kleuren, meeslepende details en unieke werelden vol verbeelding. Blader moeiteloos door een divers aanbod van genres, stijlen en verhalen — van grote AAA-avonturen tot charmante indieparels. Laat je inspireren door aanbevelingen, ontdek nieuwe favorieten en verdwaal in werelden die speciaal zijn gemaakt om te verkennen, te ontspannen en te genieten. Hier begint jouw volgende game-ervaring."
                 />
             </div>

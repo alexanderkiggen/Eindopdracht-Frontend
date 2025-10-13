@@ -8,7 +8,7 @@ function Favorieten() {
         <div className="favorieten-container">
             <h1>Favorieten</h1>
             <section className="favorieten-lijn">
-                <ShortDescription className={"favorieten-description"}
+                <ShortDescription className={"favorieten-description"} maxLength={65}
                     text="Op je favorietenlijst vind je alle games die je zelf hebt opgeslagen binnen GameFinder.
                       Dit is jouw persoonlijke overzicht, zodat je snel en eenvoudig terug kunt keren naar de titels
                       die je interessant vindt of later wilt spelen. Of het nu gaat om nieuwe releases, populaire klassiekers
