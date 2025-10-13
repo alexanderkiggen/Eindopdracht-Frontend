@@ -1,0 +1,306 @@
+
+.keuzehulp-container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: var(--sp-48) var(--sp-32);
+    min-height: 650px;
+}
+
+
+/* Card */
+.keuzehulp-card {
+    background: var(--color-surface);
+    border-radius: var(--radius-md);
+    padding: var(--sp-32);
+}
+.keuzehulp-header {
+    text-align: center;
+    margin-bottom: var(--sp-48);
+}
+
+/* LINE + DOTS progress */
+.keuzehulp-line-progress {
+    position: relative;
+    margin-bottom: var(--sp-48);
+}
+
+.keuzehulp-line-progress__rail {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 3px;
+    background: var(--color-neutral);
+}
+
+.keuzehulp-line-progress__fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: var(--color-accent);
+}
+
+.keuzehulp-line-progress__dots {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    margin-top: -18px;
+    padding: 0 var(--sp-8);
+}
+
+.keuzehulp-dot {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-round);
+    background: var(--color-neutral);
+    color: var(--color-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--fs-14);
+    font-weight: 600;
+    transition: transform .2s ease, background .2s ease, color .2s ease, border-color .2s ease;
+}
+
+.keuzehulp-dot--active {
+    background: var(--color-accent);
+    color: var(--color-black);
+}
+
+.keuzehulp-dot--current {
+    transform: scale(1.12);
+}
+
+/* Vragen */
+.keuzehulp-question {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    margin-bottom: var(--sp-32);
+}
+
+.keuzehulp-question__subtitle {
+    color: var(--color-neutral-on-neutral);
+    font-size: var(--fs-14);
+    margin-bottom: var(--sp-32);
+}
+
+/* Opties */
+.keuzehulp-options {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--sp-16);
+    padding-bottom: var(--sp-48);
+    border-bottom: 1px solid var(--color-neutral);
+}
+
+.keuzehulp-option {
+    background: var(--color-neutral);
+    border-radius: var(--radius-md);
+    padding: var(--sp-8) var(--sp-16);
+    cursor: pointer;
+    text-align: center;
+    transition: all .2s ease;
+    white-space: nowrap;
+}
+
+.keuzehulp-option:hover {
+    transform: translateY(-2px);
+}
+
+.keuzehulp-option--selected {
+    background: var(--color-accent);
+}
+
+.keuzehulp-option__check {
+    display: none;
+}
+
+.keuzehulp-option__label {
+    color: var(--color-white);
+    font-weight: 600;
+    font-size: var(--fs-14);
+}
+
+.keuzehulp-option--selected .keuzehulp-option__label {
+    color: var(--color-black);
+}
+
+/* Navigatie */
+.keuzehulp-navigation {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--sp-16);
+}
+
+/* Samenvatting */
+.keuzehulp-complete {
+    text-align: center;
+}
+
+.keuzehulp-complete__icon {
+    width: 80px;
+    height: 80px;
+    background: var(--color-accent);
+    color: var(--color-black);
+    border-radius: var(--radius-round);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    font-weight: 600;
+    margin: 0 auto var(--sp-32);
+}
+
+.keuzehulp-complete p {
+    margin-bottom: var(--sp-32);
+}
+
+.keuzehulp-summary {
+    background: var(--color-surface);
+    border-radius: var(--radius-md);
+    padding: var(--sp-32);
+    max-width: 550px;
+    margin: 0 auto var(--sp-32) auto;
+    text-align: left;
+}
+
+.keuzehulp-summary h3 {
+    margin-bottom: var(--sp-16);
+    padding-bottom: var(--sp-12);
+    border-bottom: 1px solid var(--color-neutral);
+}
+
+.keuzehulp-summary__row {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--sp-12) 0;
+    border-bottom: 1px solid var(--color-neutral);
+}
+
+.keuzehulp-summary__row:last-child {
+    border-bottom: none;
+}
+
+.keuzehulp-summary__label {
+    font-size: var(--fs-14);
+    color: var(--color-muted);
+}
+
+.keuzehulp-summary__value {
+    color: var(--color-white);
+    font-weight: 600;
+    font-size: var(--fs-14);
+    text-align: right;
+}
+
+.keuzehulp-complete__actions {
+    display: flex;
+    justify-content: center;
+    gap: var(--sp-16);
+}
+
+/* Twee kolommen */
+.keuzehulp-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: var(--sp-32);
+}
+
+.keuzehulp-info-card {
+    background: var(--color-surface);
+    border-radius: var(--radius-md);
+    padding: var(--sp-32);
+    display: flex;
+    gap: var(--sp-16);
+    margin-top: var(--sp-32);
+}
+
+.keuzehulp-info-card__img {
+    height: 120px;
+    width: auto;
+    aspect-ratio: 1 / 1;
+}
+
+.keuzehulp-info-card__body {
+    flex: 1;
+    min-width: 0;
+}
+
+.keuzehulp-info-card__text {
+    font-size: var(--fs-14);
+}
+
+.keuzehulp-info-card__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--sp-8);
+    font-size: var(--fs-14);
+}
+
+.keuzehulp-check {
+    display: inline-grid;
+    place-items: center;
+    width: 16px;
+    height: 16px;
+    margin-top: var(--sp-2);
+    margin-right: var(--sp-8);
+    background: var(--color-accent);
+    color: var(--color-black);
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.keuzehulp-info-card__list li {
+    display: flex;
+    align-items: start;
+    color: var(--color-muted);
+}
+
+/* Responsive */
+@media (max-width: 1080px) {
+    .keuzehulp-layout {
+        grid-template-columns: 1fr;
+    }
+    .keuzehulp-info-card__body {
+        margin-left: var(--sp-16);
+    }
+}
+
+@media (max-width: 640px) {
+    .keuzehulp-container {
+        padding: var(--sp-48) var(--sp-16);
+    }
+    .keuzehulp-layout {
+        gap: var(--sp-16);
+    }
+
+    .keuzehulp-card {
+        padding: var(--sp-16);
+    }
+
+    .keuzehulp-info-card {
+        padding: var(--sp-16);
+        flex-direction: column;
+    }
+    .keuzehulp-info-card__img {
+        height: auto;
+        width: 120px;
+        aspect-ratio: 1 / 1;
+    }
+    .keuzehulp-info-card__body {
+        margin-left: 0;
+    }
+
+    .keuzehulp-complete__icon {
+        width: 64px;
+        height: 64px;
+        font-size: 36px;
+    }
+}
