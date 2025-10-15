@@ -1,4 +1,4 @@
-import {Link, NavLink} from "react-router-dom";
+import {Link, NavLink, useNavigate} from "react-router-dom";
 import {useState} from "react";
 import ButtonSecondary from "../ButtonSecondary/ButtonSecondary";
 import Logo from "../../assets/logo.png";
@@ -15,6 +15,8 @@ function Navbar({
                     onLoginClick
                 }) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [searchValue, setSearchValue] = useState("");
+    const navigate = useNavigate();
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -26,11 +28,22 @@ function Navbar({
         document.body.classList.remove('no-scroll');
     };
 
+    const performSearch = () => {
+        const query = searchValue.trim();
+        if (!query) return;
+        closeMenu();
+        navigate(`/zoeken?search=${encodeURIComponent(query)}`);
+        setSearchValue("");
+    };
+
     const handleSearchSubmit = (e) => {
         e.preventDefault();
-        const formData = new FormData(e.target);
-        const query = formData.get("search");
-        console.log("Zoekterm:", query);
+        performSearch();
+    };
+
+    const handleSearchIconClick = (e) => {
+        e.preventDefault();
+        performSearch();
     };
 
     return (
@@ -61,7 +74,23 @@ function Navbar({
                         </ul>
 
                         <form className="navbar__search" onSubmit={handleSearchSubmit}>
-                            <input type="text" name="search" placeholder="Zoeken in Finder…"/>
+                            <button
+                                type="button"
+                                className="navbar__search-icon"
+                                onClick={handleSearchIconClick}
+                                aria-label="Zoeken"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#8b8b8f" viewBox="0 0 24 24">
+                                    <path d="M21 20.3 16.7 16a7.5 7.5 0 1 0-1.7 1.7L20.3 21 21 20.3zM10.5 17a6.5 6.5 0 1 1 0-13 6.5 6.5 0 0 1 0 13z"/>
+                                </svg>
+                            </button>
+                            <input
+                                type="text"
+                                name="search"
+                                placeholder="Zoeken in Finder…"
+                                value={searchValue}
+                                onChange={(e) => setSearchValue(e.target.value)}
+                            />
                         </form>
 
                         {/* Mobiel acties */}

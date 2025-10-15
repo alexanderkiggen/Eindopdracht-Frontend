@@ -71,31 +71,48 @@
     flex: 1 1 auto;
     max-width: 380px;
     margin-right: 60px;
+    display: flex;
+    align-items: center;
+}
+
+.navbar__search-icon {
+    position: absolute;
+    left: -12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    padding: var(--sp-6);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s ease;
+    z-index: 1;
+}
+
+.navbar__search-icon:hover {
+    opacity: 0.7;
+    background-color: var(--color-neutral-hover);
+    border-radius: var(--radius-round);
+}
+
+.navbar__search-icon svg {
+    display: block;
+    width: 16px;
+    height: 16px;
 }
 
 .navbar__search input {
     height: 34px;
-    width: calc(100% - 60px);
+    width: 100%;
     max-width: 360px;
     padding: 0 var(--sp-16) 0 var(--sp-40);
     border-radius: 999px;
-    background: #2a2a2e;
-    border: 1px solid #3a3a40;
+    background: var(--color-neutral);
     color: var(--color-white);
     font-size: var(--fs-14);
     margin-right: 0;
-}
-
-.navbar__search::before {
-    content: "";
-    position: absolute;
-    left: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 16px;
-    height: 16px;
-    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%238b8b8f" viewBox="0 0 24 24"><path d="M21 20.3 16.7 16a7.5 7.5 0 1 0-1.7 1.7L20.3 21 21 20.3zM10.5 17a6.5 6.5 0 1 1 0-13 6.5 6.5 0 0 1 0 13z"/></svg>') no-repeat center;
-    pointer-events: none;
 }
 
 .navbar__search input::placeholder {
@@ -177,7 +194,8 @@
 
     .navbar__search {
         padding-bottom: 8px;
-        margin-right: 0;
+        margin-left: var(--sp-32);
+        margin-right: var(--sp-32);
         max-width: 100%;
     }
 
@@ -199,6 +217,19 @@
     .no-scroll,
     .no-scroll body {
         overflow: hidden;
+    }
+    .navbar__search-icon {
+        left: -20px;
+        top: 42%
+    }
+}
+
+@media (max-width: 640px) {
+    .navbar__container {
+        padding: 0 var(--sp-16);
+    }
+    .navbar__collapsible[data-state="open"] {
+        padding: 0 var(--sp-16) var(--sp-16) var(--sp-16);
     }
 }
 
