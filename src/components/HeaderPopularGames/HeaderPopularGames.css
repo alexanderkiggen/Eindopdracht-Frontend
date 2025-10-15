@@ -4,7 +4,6 @@
     gap: var(--sp-16);
     max-width: 1440px;
     margin: 0 auto;
-    padding: var(--sp-32) 0;
     align-items: stretch;
 }
 
@@ -200,9 +199,6 @@
 
     .featured-game__wrapper img {
         min-height: 350px;
-    }
-    .main-content {
-        padding: var(--sp-24) var(--sp-16);
     }
 
     .featured-game__content {

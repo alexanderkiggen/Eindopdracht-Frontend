@@ -25,6 +25,10 @@
     background: var(--color-surface);
     border-radius: var(--radius-md);
     overflow: hidden;
+    transition: transform 0.2s ease;
+}
+.zoekresultaat:hover {
+    transform: translateY(-4px);
 }
 
 .zoekresultaat__image {

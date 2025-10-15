@@ -92,7 +92,7 @@ function GenreCarousel({ onGenreSelect }) {
                 <div className="genre-carousel__track">
                     {genres.map((genre) => (
                         <div
-                            key={genre.id}
+                            key={genre.slug}
                             className="genre-card"
                             onClick={() => onGenreSelect(genre.slug)}
                         >

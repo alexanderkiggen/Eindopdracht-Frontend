@@ -34,7 +34,6 @@ export const addFavorite = (gameId, gameSlug) => {
 
         // Check of game al bestaat
         if (favorites.some(fav => fav.id === gameId)) {
-            console.log('Game is al favoriet');
             return false;
         }
 
@@ -54,7 +53,6 @@ export const removeFavorite = (gameId) => {
         const filtered = favorites.filter(fav => fav.id !== gameId);
 
         if (filtered.length === favorites.length) {
-            console.log('Game was geen favoriet');
             return false;
         }
 
@@ -80,13 +78,11 @@ export const initializeFavoritesFromJSON = () => {
     try {
         const existing = localStorage.getItem('gameFavorites');
         if (existing) {
-            console.log('Favorites already initialized');
             return;
         }
 
         // Gebruik geïmporteerde JSON data
         localStorage.setItem('gameFavorites', JSON.stringify(favoritenData));
-        console.log('Favorites initialized from JSON');
     } catch (error) {
         console.error('Error initializing favorites:', error);
     }

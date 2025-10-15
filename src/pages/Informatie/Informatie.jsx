@@ -3,8 +3,8 @@ import {Link, useParams, useNavigate} from 'react-router-dom';
 
 import axios from 'axios';
 import './Informatie.css';
-import ButtonPrimary from '../../components/ButtonPrimary/ButtonPrimary';
-import RatingGame from '../../components/RatingGame/RatingGame';
+import ButtonPrimary from '../../components/ButtonPrimary/ButtonPrimary.jsx';
+import RatingGame from '../../components/RatingGame/RatingGame.jsx';
 import PlayStationIcon from "../../assets/icons/playstation.svg";
 import XboxIcon from "../../assets/icons/xbox.svg";
 import WindowsIcon from "../../assets/icons/windows.svg";
@@ -21,8 +21,7 @@ function Informatie() {
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 640);
     const [selectedScreenshot, setSelectedScreenshot] = useState(null);
 
-    const API_KEY = "1c64704f98f5425d89b4a108cce3c0bb";
-    const BASE_URL = 'https://api.rawg.io/api';
+    const BASE_URL = import.meta.env.VITE_BASE_URL;
 
     useEffect(() => {
         const handleResize = () => setIsMobile(window.innerWidth <= 640);
@@ -44,8 +43,8 @@ function Informatie() {
 
             // Fetch game details en screenshots tegelijk
             const [gameResponse, screenshotsResponse] = await Promise.all([
-                axios.get(`${BASE_URL}/games/${game_slug}`, {params: {key: API_KEY}}),
-                axios.get(`${BASE_URL}/games/${game_slug}/screenshots`, {params: {key: API_KEY}})
+                axios.get(`${BASE_URL}/games/${game_slug}`, {params: {key: import.meta.env.VITE_API_KEY}}),
+                axios.get(`${BASE_URL}/games/${game_slug}/screenshots`, {params: {key: import.meta.env.VITE_API_KEY}})
             ]);
 
             setGame(gameResponse.data);
@@ -173,7 +172,7 @@ function Informatie() {
         return (
             <div className="informatie-container">
                 <div className="informatie-error">
-                    <h2>Fout bij het laden</h2>
+                    <h2>Fout bij het laden van games</h2>
                     <p>{error || 'Game niet gevonden'}</p>
                     <ButtonPrimary onClick={() => navigate(-1)}>Terug</ButtonPrimary>
                 </div>

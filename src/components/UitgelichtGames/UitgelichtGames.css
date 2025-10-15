@@ -1,7 +1,6 @@
 .highlighted-games-section {
     max-width: 1440px;
     margin: 0 auto;
-    padding: var(--sp-40) var(--sp-20);
 }
 
 .section-title {
@@ -105,7 +104,7 @@
     }
 
     .highlighted-games-section {
-        padding: var(--sp-32) var(--sp-16);
+        padding: var(--sp-32) 0;
     }
 }
 
@@ -120,6 +119,6 @@
     }
 
     .highlighted-games-section {
-        padding: var(--sp-24) var(--sp-16);
+        padding: var(--sp-24) 0;
     }
 }

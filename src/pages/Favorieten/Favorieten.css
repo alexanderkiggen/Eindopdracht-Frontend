@@ -7,3 +7,9 @@
 .short-desc {
     margin-bottom: var(--sp-24);
 }
+
+@media (max-width: 640px) {
+    .favorieten-container {
+        padding: var(--sp-48) var(--sp-16);
+    }
+}

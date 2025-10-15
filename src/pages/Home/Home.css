@@ -1,4 +1,10 @@
 .home-container {
     text-align: center;
-    padding: 20px;
+    padding: var(--sp-48) var(--sp-32);
+}
+
+@media (max-width: 640px) {
+    .home-container {
+        padding: var(--sp-48) var(--sp-16);
+    }
 }
