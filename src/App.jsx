@@ -1,11 +1,15 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+
 import './App.css';
+
 import Home from './pages/Home/Home';
 import Favorieten from './pages/Favorieten/Favorieten';
 import Keuzehulp from "./pages/Keuzehulp/Keuzehulp";
 import Ontdekken from "./pages/Ontdekken/Ontdekken";
 import Informatie from "./pages/Informatie/Informatie";
+import Zoeken from "./pages/Zoeken/Zoeken";
+import NotFound from "./pages/NotFound/NotFound";
 import LoginComponent from './components/Login/Login';
 
 import NavBar from "./components/NavBar/NavBar";
@@ -18,28 +22,28 @@ import TwitchLogo from "./assets/Socials/twitch.png";
 import XLogo from "./assets/Socials/x.png";
 import YoutubeLogo from "./assets/Socials/youtube.png";
 
+// ScrollToTop
+function ScrollToTop() {
+    const { pathname, hash } = useLocation();
+    useEffect(() => { if (!hash) window.scrollTo(0, 0); }, [pathname, hash]);
+    return null;
+}
+
 function App() {
     const [isLoginOpen, setIsLoginOpen] = useState(false);
 
     const openLogin = () => setIsLoginOpen(true);
     const closeLogin = () => setIsLoginOpen(false);
 
-    // Scroll lock bij popup
     useEffect(() => {
-        if (isLoginOpen) {
-            document.body.style.overflow = "hidden";
-        } else {
-            document.body.style.overflow = "";
-        }
-        return () => {
-            document.body.style.overflow = "";
-        };
+        document.body.style.overflow = isLoginOpen ? 'hidden' : '';
+        return () => { document.body.style.overflow = ''; };
     }, [isLoginOpen]);
 
     const pageLinks = [
         { to: "/ontdekken", children: "Ontdekken" },
         { to: "/keuzehulp", children: "Keuzehulp" },
-        { to: "/favorieten", children: "FavorietenGebruiker" },
+        { to: "/favorieten", children: "Favorieten" },
         { to: "/", children: "Home" },
     ];
 
@@ -62,6 +66,7 @@ function App() {
 
     return (
         <Router>
+            <ScrollToTop />
             <div className="app">
                 <NavBar
                     NavigationLinkOneTo="/ontdekken"
@@ -81,10 +86,11 @@ function App() {
                         <Route path="/informatie/:game_slug" element={<Informatie />} />
                         <Route path="/keuzehulp" element={<Keuzehulp />} />
                         <Route path="/favorieten" element={<Favorieten />} />
+                        <Route path="/zoeken" element={<Zoeken />} />
+                        <Route path="*" element={<NotFound />} />
                     </Routes>
                 </div>
 
-                {/* Overlay Login tonen */}
                 {isLoginOpen && <LoginComponent onClose={closeLogin} />}
 
                 <Footer pageLinks={pageLinks} genreLinks={genreLinks} socialLinks={socialLinks} />
