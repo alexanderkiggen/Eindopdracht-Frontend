@@ -1,6 +1,7 @@
 /* Container */
 .favorieten-lijst-container {
-    padding: var(--sp-48) 0;
+    padding: var(--sp-32) 0;
+    border-top: 1px solid var(--color-neutral);
 }
 
 /* Error States */

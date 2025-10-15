@@ -16,8 +16,7 @@ function Favorieten() {
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 640);
     const gamesPerPage = 8;
 
-    const API_KEY = "1c64704f98f5425d89b4a108cce3c0bb";
-    const BASE_URL = 'https://api.rawg.io/api';
+    const BASE_URL = import.meta.env.VITE_BASE_URL;
 
     const currentPage = parseInt(searchParams.get('page')) || 1;
 
@@ -52,7 +51,7 @@ function Favorieten() {
 
             const gamePromises = favoriteGames.map(fav =>
                 axios.get(`${BASE_URL}/games/${fav.slug}`, {
-                    params: { key: API_KEY }
+                    params: { key: import.meta.env.VITE_API_KEY }
                 })
             );
 
@@ -117,7 +116,7 @@ function Favorieten() {
         return (
             <div className="favorieten-lijst-container">
                 <div className="favorieten-error">
-                    <h2>Fout bij het laden</h2>
+                    <h2>Fout bij het laden van games</h2>
                     <p>{error}</p>
                     <ButtonPrimary onClick={fetchFavoriteGames}>Opnieuw proberen</ButtonPrimary>
                 </div>
