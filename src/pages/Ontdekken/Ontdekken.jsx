@@ -1,5 +1,5 @@
-import {useState, useEffect} from 'react';
-import {useSearchParams} from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 
 import './Ontdekken.css';
@@ -20,10 +20,8 @@ function Ontdekken() {
     const [searchParams, setSearchParams] = useSearchParams();
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 640);
 
-    const API_KEY = '1c64704f98f5425d89b4a108cce3c0bb';
-    const BASE_URL = 'https://api.rawg.io/api';
+    const BASE_URL = import.meta.env.VITE_BASE_URL;
     const GAMES_PER_PAGE = 9;
-
     const PLATFORMS = '4,187,18,1,186';
 
     const currentPage = parseInt(searchParams.get('page')) || 1;
@@ -33,7 +31,6 @@ function Ontdekken() {
     const sortOrder = searchParams.get('sort') || '-rating';
 
     useEffect(() => {
-        // Dit is voor de pagina knoppen
         const handleResize = () => setIsMobile(window.innerWidth <= 640);
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
@@ -49,7 +46,7 @@ function Ontdekken() {
             setError(null);
 
             const params = {
-                key: API_KEY,
+                key: import.meta.env.VITE_API_KEY,
                 page: currentPage,
                 page_size: GAMES_PER_PAGE,
                 platforms: selectedPlatform || PLATFORMS,
@@ -58,13 +55,13 @@ function Ontdekken() {
             if (selectedGenre) params.genres = selectedGenre;
             if (selectedFeatures) params.tags = selectedFeatures;
 
-            const listResp = await axios.get(`${BASE_URL}/games`, {params});
+            const listResp = await axios.get(`${BASE_URL}/games`, { params });
             const baseResults = listResp.data?.results ?? [];
             setTotalCount(listResp.data?.count || 0);
 
             const detailPromises = baseResults.slice(0, GAMES_PER_PAGE).map((g) =>
                 axios
-                    .get(`${BASE_URL}/games/${g.slug}`, {params: {key: API_KEY}})
+                    .get(`${BASE_URL}/games/${g.slug}`, { params: { key: import.meta.env.VITE_API_KEY } })
                     .then((r) => ({
                         slug: g.slug,
                         description_raw: r.data?.description_raw ?? '',
@@ -83,7 +80,7 @@ function Ontdekken() {
             const detailsBySlug = new Map(details.map((d) => [d.slug, d]));
             const enriched = baseResults.map((b) => {
                 const d = detailsBySlug.get(b.slug);
-                return d ? {...b, ...d} : b;
+                return d ? { ...b, ...d } : b;
             });
 
             setGames(enriched);
@@ -107,7 +104,7 @@ function Ontdekken() {
         const newParams = new URLSearchParams(searchParams);
         newParams.set('page', pageNumber);
         setSearchParams(newParams);
-        window.scrollTo({top: 0, behavior: 'smooth'});
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const handlePrevPage = () => {
@@ -130,89 +127,76 @@ function Ontdekken() {
         return pages;
     };
 
-    if (loading) {
-        return (
-            <div className="ontdekken-container">
-                <div className="ontdekken-header">
-                    <h1>Ontdek Games</h1>
-                </div>
-                <LoadingSpinner/>
-            </div>
-        );
-    }
-
-    if (error) {
-        return (
-            <div className="ontdekken-container">
-                <div className="ontdekken-header">
-                    <h1>Ontdek Games</h1>
-                </div>
-                <div className="ontdekken-error">
-                    <h2>Er ging iets mis</h2>
-                    <p>{error}</p>
-                    <ButtonPrimary onClick={fetchGames}>Opnieuw proberen</ButtonPrimary>
-                </div>
-            </div>
-        );
-    }
-
     return (
         <div className="ontdekken-container">
             <div className="ontdekken-header">
                 <h1>Ontdek Games</h1>
-                <ShortDescription maxLength={65}
+                <ShortDescription
+                    maxLength={65}
                     text="Ontdek visuele hoogtes waar elke game tot leven komt in rijke kleuren, meeslepende details en unieke werelden vol verbeelding. Blader moeiteloos door een divers aanbod van genres, stijlen en verhalen — van grote AAA-avonturen tot charmante indieparels. Laat je inspireren door aanbevelingen, ontdek nieuwe favorieten en verdwaal in werelden die speciaal zijn gemaakt om te verkennen, te ontspannen en te genieten. Hier begint jouw volgende game-ervaring."
                 />
             </div>
 
-            <GenreCarousel onGenreSelect={(genre) => updateFilters('genre', genre)}/>
+            {loading && (
+                <LoadingSpinner />
+            )}
 
-            <div className="ontdekken-content">
-                <FilterSection
-                    selectedGenre={selectedGenre}
-                    selectedPlatform={selectedPlatform}
-                    selectedFeatures={selectedFeatures}
-                    sortOrder={sortOrder}
-                    onFilterChange={updateFilters}
-                />
+            {!loading && error && (
+                <div className="ontdekken-error">
+                    <h2>Fout bij het laden van games</h2>
+                    <p>{error}</p>
+                    <ButtonPrimary onClick={fetchGames}>Opnieuw proberen</ButtonPrimary>
+                </div>
+            )}
 
-                <div className="ontdekken-games">
-                    <>
-                        <div className="ontdekken-grid">
-                            {games.map((game) => (
-                                <GameCard key={game.id} game={game} showFavoriteButton={true}/>
-                            ))}
-                        </div>
+            {!loading && !error && (
+                <>
+                    <GenreCarousel onGenreSelect={(genre) => updateFilters('genre', genre)} />
 
-                        <div className="ontdekken-pagination">
-                            <ButtonSecondary onClick={handlePrevPage} disabled={currentPage === 1}>
-                                {isMobile ? '<' : 'Vorige Pagina'}
-                            </ButtonSecondary>
+                    <div className="ontdekken-content">
+                        <FilterSection
+                            selectedGenre={selectedGenre}
+                            selectedPlatform={selectedPlatform}
+                            selectedFeatures={selectedFeatures}
+                            sortOrder={sortOrder}
+                            onFilterChange={updateFilters}
+                        />
 
-                            <div className="ontdekken-pagination__pages">
-                                {getPageNumbers().map((pageNum) => (
-                                    <button
-                                        key={pageNum}
-                                        className={`ontdekken-pagination__page ${
-                                            currentPage === pageNum ? 'ontdekken-pagination__page--active' : ''
-                                        }`}
-                                        onClick={() => handlePageChange(pageNum)}
-                                    >
-                                        {pageNum}
-                                    </button>
+                        <div className="ontdekken-games">
+                            <div className="ontdekken-grid">
+                                {games.map((game) => (
+                                    <GameCard key={game.id} game={game} showFavoriteButton={true} />
                                 ))}
                             </div>
 
-                            <ButtonSecondary
-                                onClick={handleNextPage}
-                                disabled={currentPage >= Math.ceil(totalCount / GAMES_PER_PAGE)}
-                            >
-                                {isMobile ? '>' : 'Volgende Pagina'}
-                            </ButtonSecondary>
+                            <div className="ontdekken-pagination">
+                                <ButtonSecondary onClick={handlePrevPage} disabled={currentPage === 1}>
+                                    {isMobile ? '<' : 'Vorige Pagina'}
+                                </ButtonSecondary>
+
+                                <div className="ontdekken-pagination__pages">
+                                    {getPageNumbers().map((pageNum) => (
+                                        <button
+                                            key={pageNum}
+                                            className={`ontdekken-pagination__page ${currentPage === pageNum ? 'ontdekken-pagination__page--active' : ''}`}
+                                            onClick={() => handlePageChange(pageNum)}
+                                        >
+                                            {pageNum}
+                                        </button>
+                                    ))}
+                                </div>
+
+                                <ButtonSecondary
+                                    onClick={handleNextPage}
+                                    disabled={currentPage >= Math.ceil(totalCount / GAMES_PER_PAGE)}
+                                >
+                                    {isMobile ? '>' : 'Volgende Pagina'}
+                                </ButtonSecondary>
+                            </div>
                         </div>
-                    </>
-                </div>
-            </div>
+                    </div>
+                </>
+            )}
         </div>
     );
 }
