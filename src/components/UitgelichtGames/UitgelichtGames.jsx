@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Link } from "react-router-dom";
+
 import './UitgelichtGames.css';
 
 import ButtonPrimary from "../ButtonPrimary/ButtonPrimary";
@@ -11,8 +13,7 @@ const UitgelichtGames = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const API_KEY = "1c64704f98f5425d89b4a108cce3c0bb";
-    const BASE_URL = 'https://api.rawg.io/api';
+    const BASE_URL = import.meta.env.VITE_BASE_URL;
 
     // De datums van dit jaar
     const getCurrentYearRange = () => {
@@ -23,13 +24,13 @@ const UitgelichtGames = () => {
     };
 
     useEffect(() => {
-        if (!API_KEY) {
+        if (!import.meta.env.VITE_API_KEY) {
             setError('RAWG API key niet gevonden in environment variabelen');
             setLoading(false);
             return;
         }
         fetchPopularPS5Games();
-    }, [API_KEY]);
+    }, [import.meta.env.VITE_API_KEY]);
 
     const fetchPopularPS5Games = async () => {
         try {
@@ -41,7 +42,7 @@ const UitgelichtGames = () => {
             // Populaire PS5-games van dit jaar op
             const response = await axios.get(`${BASE_URL}/games`, {
                 params: {
-                    key: API_KEY,
+                    key: import.meta.env.VITE_API_KEY,
                     platforms: 187, // PS5
                     dates: dateRange, // dit jaar
                     ordering: '-added', // populairste (meest toegevoegd aan lijsten van RAWG)
@@ -61,11 +62,6 @@ const UitgelichtGames = () => {
         } finally {
             setLoading(false);
         }
-    };
-
-    const handleGameClick = (game) => {
-        console.log(`Game clicked: ${game.name}`);
-        // Navigatie naar specifieke gamepagina
     };
 
     if (loading) {
@@ -99,10 +95,10 @@ const UitgelichtGames = () => {
             <h2 className="section-title">Uitgelichte PS5 Games</h2>
             <div className="highlighted-games-grid">
                 {games.map((game) => (
-                    <div
-                        key={game.id}
+                    <Link
+                        key={game.id || game.slug}
+                        to={`/informatie/${game.slug}`}
                         className="game-card"
-                        onClick={() => handleGameClick(game)}
                     >
                         <img
                             src={game.background_image || '/api/placeholder/400/200'}
@@ -111,7 +107,7 @@ const UitgelichtGames = () => {
                         />
                         <p>{game.name}</p>
                         <RatingGame gameRating={game.rating} />
-                    </div>
+                    </Link>
                 ))}
             </div>
             <div className="view-more">

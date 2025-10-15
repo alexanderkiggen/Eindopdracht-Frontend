@@ -1,4 +1,3 @@
-/* Uitgelichte Games Section */
 .highlighted-games-section {
     max-width: 1440px;
     margin: 0 auto;
@@ -29,11 +28,19 @@
     background-color: transparent;
     transition: transform 0.2s ease;
     cursor: pointer;
+    text-decoration: none;
+    color: inherit;
 }
 
 .highlighted-games-grid .game-card:hover {
     background-color: transparent;
     transform: translateY(-4px);
+}
+
+.highlighted-games-grid .game-card:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(100, 150, 250, 0.4);
+    border-radius: var(--radius-md);
 }
 
 .highlighted-games-grid .game-card img {
@@ -58,7 +65,9 @@
     margin-top: 5px;
     margin-bottom: var(--sp-4);
     font-weight: 600;
+    text-decoration: none;
 }
+
 .view-more {
     text-align: center;
 }
@@ -89,7 +98,6 @@
     margin-bottom: var(--sp-24);
 }
 
-/* Responsive design */
 @media (max-width: 1080px) {
     .highlighted-games-grid {
         grid-template-columns: repeat(2, 1fr);
