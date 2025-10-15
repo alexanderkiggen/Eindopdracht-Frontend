@@ -15,19 +15,19 @@ const HeaderPopularGames = () => {
     const intervalRef = useRef(null);
     const progressIntervalRef = useRef(null);
 
-    const API_KEY = "1c64704f98f5425d89b4a108cce3c0bb";
-    const BASE_URL = 'https://api.rawg.io/api';
+    const BASE_URL = import.meta.env.VITE_BASE_URL;
+
     const CYCLE_DURATION = 25000;
     const PROGRESS_UPDATE_INTERVAL = 100;
 
     useEffect(() => {
-        if (!API_KEY) {
+        if (!import.meta.env.VITE_API_KEY) {
             setError('RAWG API key niet gevonden');
             setLoading(false);
             return;
         }
         fetchTopGames();
-    }, [API_KEY]);
+    }, [import.meta.env.VITE_API_KEY]);
 
     // Start cycling
     useEffect(() => {
@@ -55,7 +55,7 @@ const HeaderPopularGames = () => {
             // Haal all time top 5 games op
             const response = await axios.get(`${BASE_URL}/games`, {
                 params: {
-                    key: API_KEY,
+                    key: import.meta.env.VITE_API_KEY,
                     ordering: '-added',
                     page_size: 5
                 }
@@ -89,7 +89,7 @@ const HeaderPopularGames = () => {
         try {
             const response = await axios.get(`${BASE_URL}/games/${game.id}`, {
                 params: {
-                    key: API_KEY
+                    key: import.meta.env.VITE_API_KEY
                 }
             });
 
@@ -176,7 +176,7 @@ const HeaderPopularGames = () => {
             <main className="main-content">
                 <div className="error-container">
                     <h2>Fout bij het laden van games</h2>
-                    <p>Er is een probleem opgetreden: {error}</p>
+                    <p>{error}</p>
                     <ButtonPrimary onClick={fetchTopGames}>{"Opnieuw proberen"}</ButtonPrimary>
                 </div>
             </main>
@@ -204,12 +204,9 @@ const HeaderPopularGames = () => {
                             <p>
                                 {truncateDescription(featuredGame.description)}
                             </p>
-                            <button
-                                className="btn btn--primary"
-                                onClick={() => console.log(`Bekijk game: ${featuredGame.name}`)}
-                            >
+                            <ButtonPrimary to={`/informatie/${featuredGame.slug}`}>
                                 Bekijk de Game
-                            </button>
+                            </ButtonPrimary>
                         </div>
                     </div>
                 )}

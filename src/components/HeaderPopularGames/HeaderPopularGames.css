@@ -63,10 +63,6 @@
     line-height: var(--lh-base);
 }
 
-.featured-game__content .btn {
-    margin-bottom: var(--sp-16);
-}
-
 .highlighted-games {
     flex: 0 0 300px;
     display: flex;
