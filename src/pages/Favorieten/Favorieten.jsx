@@ -1,15 +1,25 @@
-import {useState} from 'react';
 import './Favorieten.css';
 import FavorietenGebruiker from '../../components/FavorietenGebruiker/FavorietenGebruiker';
 import ShortDescription from '../../components/ShortDescription/ShortDescription';
 
-function Favorieten() {
+function Favorieten({ user }) {
+    if (!user) {
+        return (
+            <div className="favorieten-container">
+                <h1>Favorieten</h1>
+                <div className="favorieten-boodschap">
+                    <p>Niet geautoriseerd. Log in via <strong>Inloggen</strong> in de navigatie.</p>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="favorieten-container">
             <h1>Favorieten</h1>
             <section className="short-desc">
                 <ShortDescription maxLength={55}
-                    text="Op je favorietenlijst vind je alle games die je zelf hebt opgeslagen binnen GameFinder.
+                      text="Op je favorietenlijst vind je alle games die je zelf hebt opgeslagen binnen GameFinder.
                       Dit is jouw persoonlijke overzicht, zodat je snel en eenvoudig terug kunt keren naar de titels
                       die je interessant vindt of later wilt spelen. Of het nu gaat om nieuwe releases, populaire klassiekers
                       of verborgen parels, je hebt ze altijd binnen handbereik. Gebruik je lijst om keuzes te maken,
@@ -18,7 +28,7 @@ function Favorieten() {
                       Je kunt er ook ideeën uit halen voor cadeaus of samen spelen met vrienden."
                 />
             </section>
-                <FavorietenGebruiker/>
+            <FavorietenGebruiker user={user} />
         </div>
     );
 }

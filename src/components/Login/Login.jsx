@@ -1,198 +1,151 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import './Login.css';
-import ButtonPrimary from "../../components/ButtonPrimary/ButtonPrimary";
+import { loginRequest, registerRequest } from '../../utils/authentication.js';
 
-function Login({ onClose }) {
-    const [mode, setMode] = useState("login");
-    const [resetEmail, setResetEmail] = useState('');
-    const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
-        email: '',
-        password: ''
-    });
+function Login({ onClose, onSuccess }) {
+    const [mode, setMode] = useState('login');
+    const [form, setForm] = useState({ email: '', password: '', confirm: '' });
+    const [busy, setBusy] = useState(false);
+    const [msg, setMsg] = useState('Voer je gegevens in om in te loggen.');
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+    const swapMode = (next) => {
+        setMode(next);
+        setMsg(next === 'login'
+            ? 'Voer je gegevens in om in te loggen.'
+            : 'Maak een account aan om te starten.');
     };
 
-    const handleLogin = (e) => {
+    const submit = async (e) => {
         e.preventDefault();
-        console.log('Login gegevens:', { email: formData.email, password: formData.password });
-    };
+        setBusy(true);
 
-    const handleRegister = (e) => {
-        e.preventDefault();
-        console.log('Registreer gegevens:', formData);
-    };
-
-    const handlePasswordReset = (e) => {
-        e.preventDefault();
-        console.log('Wachtwoord reset aangevraagd voor:', resetEmail);
-        setResetEmail('');
-        setMode("login");
+        try {
+            if (mode === 'login') {
+                setMsg('Bezig met inloggen...');
+                const { user } = await loginRequest(form.email.trim(), form.password);
+                setMsg('Inloggen gelukt.');
+                onSuccess?.(user);
+            } else {
+                if (form.password.length < 6) {
+                    setMsg('Wachtwoord moet minimaal 6 tekens zijn.');
+                    return;
+                }
+                if (form.password !== form.confirm) {
+                    setMsg('Wachtwoorden komen niet overeen.');
+                    return;
+                }
+                setMsg('Bezig met registreren...');
+                const { user } = await registerRequest(form.email.trim(), form.password);
+                setMsg('Account aangemaakt en ingelogd.');
+                onSuccess?.(user);
+            }
+        } catch (err) {
+            const apiMsg =
+                err?.response?.data?.message ||
+                (mode === 'login'
+                    ? 'Inloggen mislukt. Controleer je gegevens.'
+                    : 'Registreren mislukt. E-mailadres bestaat mogelijk al.');
+            setMsg(apiMsg);
+        } finally {
+            setBusy(false);
+        }
     };
 
     return (
         <div className="login-page" onClick={onClose}>
             <div className="login-card" onClick={(e) => e.stopPropagation()}>
                 <div className="login-header">
-                    <button className="back-link" onClick={onClose}>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-                             stroke="currentColor" strokeWidth="2">
+                    <button className="back-link" onClick={onClose} aria-label="Sluiten">
+                        <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        >
                             <path d="M19 12H5M12 19l-7-7 7-7" />
                         </svg>
                         Sluiten
                     </button>
-                    <h1>
-                        {mode === "register"
-                            ? "Registreren"
-                            : mode === "forgot"
-                                ? "Wachtwoord vergeten"
-                                : "Inloggen"}
-                    </h1>
+                    <h1>{mode === 'login' ? 'Inloggen' : 'Registreren'}</h1>
                 </div>
 
-                <form onSubmit={
-                    mode === "register"
-                        ? handleRegister
-                        : mode === "forgot"
-                            ? handlePasswordReset
-                            : handleLogin
-                }>
-                    {mode === "register" && (
-                        <div className="form-row">
-                            <div className="form-group">
-                                <label htmlFor="firstName">Voornaam</label>
-                                <input
-                                    type="text"
-                                    id="firstName"
-                                    name="firstName"
-                                    value={formData.firstName}
-                                    onChange={handleInputChange}
-                                    placeholder="Voornaam"
-                                    required
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="lastName">Achternaam</label>
-                                <input
-                                    type="text"
-                                    id="lastName"
-                                    name="lastName"
-                                    value={formData.lastName}
-                                    onChange={handleInputChange}
-                                    placeholder="Achternaam"
-                                    required
-                                />
-                            </div>
-                        </div>
-                    )}
+                <form onSubmit={submit}>
+                    <div className="form-group">
+                        <label htmlFor="email">E-mailadres</label>
+                        <input
+                            id="email"
+                            type="email"
+                            required
+                            value={form.email}
+                            onChange={(e) => setForm({ ...form, email: e.target.value })}
+                        />
+                    </div>
 
-                    {(mode === "login" || mode === "register") && (
-                        <>
-                            <div className="form-group">
-                                <label htmlFor="email">E-mailadres</label>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    name="email"
-                                    value={formData.email}
-                                    onChange={handleInputChange}
-                                    placeholder="je@email.com"
-                                    required
-                                />
-                            </div>
+                    <div className="form-group">
+                        <label htmlFor="password">Wachtwoord</label>
+                        <input
+                            id="password"
+                            type="password"
+                            required
+                            value={form.password}
+                            onChange={(e) => setForm({ ...form, password: e.target.value })}
+                            minLength={6}
+                        />
+                    </div>
 
-                            <div className="form-group">
-                                <label htmlFor="password">Wachtwoord</label>
-                                <input
-                                    type="password"
-                                    id="password"
-                                    name="password"
-                                    value={formData.password}
-                                    onChange={handleInputChange}
-                                    placeholder="Ssss"
-                                    required
-                                />
-                                {mode === "login" && (
-                                    <button
-                                        type="button"
-                                        className="forgot-password"
-                                        onClick={() => setMode("forgot")}
-                                    >
-                                        Wachtwoord vergeten?
-                                    </button>
-                                )}
-                            </div>
-                        </>
-                    )}
-
-                    {mode === "forgot" && (
+                    {mode === 'register' && (
                         <div className="form-group">
-                            <label htmlFor="resetEmail">E-mailadres</label>
+                            <label htmlFor="confirm">Herhaal wachtwoord</label>
                             <input
-                                type="email"
-                                id="resetEmail"
-                                value={resetEmail}
-                                onChange={(e) => setResetEmail(e.target.value)}
-                                placeholder="je@email.com"
+                                id="confirm"
+                                type="password"
                                 required
-                                autoFocus
+                                value={form.confirm}
+                                onChange={(e) => setForm({ ...form, confirm: e.target.value })}
+                                minLength={6}
                             />
                         </div>
                     )}
 
-                    <ButtonPrimary type="submit">
-                        {mode === "register"
-                            ? "Registreren"
-                            : mode === "forgot"
-                                ? "Wachtwoord aanvragen"
-                                : "Inloggen"}
-                    </ButtonPrimary>
+                    <p role="status" className="status-message">
+                        {msg}
+                    </p>
 
-                    <div className="form-footer">
-                        {mode === "login" && (
+                    <button className="btn--primary" type="submit" disabled={busy}>
+                        {busy ? 'Bezig…' : mode === 'login' ? 'Inloggen' : 'Account aanmaken'}
+                    </button>
+
+                    <p className="footer-text">
+                        {mode === 'login' ? (
                             <>
-                                <p>Ben je nog niet bekend bij ons? </p>
+                                Nog geen account?{' '}
                                 <button
                                     type="button"
-                                    className="toggle-mode"
-                                    onClick={() => setMode("register")}
+                                    className="toggle-link"
+                                    onClick={() => swapMode('register')}
                                 >
-                                    Registreer
+                                    Registreer hier
                                 </button>
-                                <span className="footer-suffix">  je dan eerst en krijg toegang tot alles!</span>
+                                .
                             </>
-                        )}
-
-                        {mode === "register" && (
+                        ) : (
                             <>
-                                <p>Heb je al een account? </p>
+                                Al een account?{' '}
                                 <button
                                     type="button"
-                                    className="toggle-mode"
-                                    onClick={() => setMode("login")}
+                                    className="toggle-link"
+                                    onClick={() => swapMode('login')}
                                 >
-                                    Breng me naar inloggen
+                                    Log hier in
                                 </button>
+                                .
                             </>
                         )}
-
-                        {mode === "forgot" && (
-                            <>
-                                <p>Je wachtwoord toch herinnerd? </p>
-                                <button
-                                    type="button"
-                                    className="toggle-mode"
-                                    onClick={() => setMode("login")}
-                                >
-                                    Breng me naar inloggen
-                                </button>
-                            </>
-                        )}
-                    </div>
+                    </p>
                 </form>
             </div>
         </div>

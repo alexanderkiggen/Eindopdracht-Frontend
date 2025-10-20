@@ -8,6 +8,16 @@
     margin-bottom: var(--sp-24);
 }
 
+.favorieten-boodschap {
+    border-radius: var(--radius-md);
+    padding: var(--sp-16);
+    background-color: var(--color-surface);
+}
+
+.favorieten-boodschap p {
+    margin: 0;
+}
+
 @media (max-width: 640px) {
     .favorieten-container {
         padding: var(--sp-48) var(--sp-16);

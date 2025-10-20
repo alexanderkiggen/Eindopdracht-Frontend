@@ -1,101 +1,62 @@
-import favoritenData from '../data/favorieten.json';
+// Per-account favorites: opgeslagen onder key "gameFavorites:<email>"
+const KEY_PREFIX = 'gameFavorites:';
 
-export const getFavorites = () => {
-    try {
-        const favorites = localStorage.getItem('gameFavorites');
-        if (favorites) {
-            return JSON.parse(favorites);
-        }
-        // Als localStorage leeg is wordt jsosn data gebruikt
-        localStorage.setItem('gameFavorites', JSON.stringify(favoritenData));
-        return favoritenData;
-    } catch (error) {
-        console.error('Error reading favorites:', error);
-        return favoritenData;
-    }
+const currentEmail = () =>
+    (localStorage.getItem('user_email') || 'anonymous').toLowerCase();
+
+const keyFor = (email) => `${KEY_PREFIX}${(email || currentEmail()).toLowerCase()}`;
+
+const safeParse = (v, fallback) => {
+    try { return JSON.parse(v); } catch { return fallback; }
 };
 
-const saveFavorites = (favorites) => {
-    try {
-        localStorage.setItem('gameFavorites', JSON.stringify(favorites));
-    } catch (error) {
-        console.error('Error saving favorites:', error);
-    }
+// --- Public API ---
+export const getFavorites = (email) => {
+    const list = safeParse(localStorage.getItem(keyFor(email)), null);
+    return Array.isArray(list) ? list : [];
 };
 
-export const isFavorite = (gameId) => {
-    const favorites = getFavorites();
-    return favorites.some(fav => fav.id === gameId);
+const saveFavorites = (favorites, email) => {
+    localStorage.setItem(keyFor(email), JSON.stringify(favorites));
+    notifyListeners(email);
 };
 
-export const addFavorite = (gameId, gameSlug) => {
-    try {
-        const favorites = getFavorites();
+export const isFavorite = (gameId, email) =>
+    getFavorites(email).some((fav) => fav.id === gameId);
 
-        // Check of game al bestaat
-        if (favorites.some(fav => fav.id === gameId)) {
-            return false;
-        }
+export const addFavorite = (gameId, gameSlug, email) => {
+    const favorites = getFavorites(email);
+    if (favorites.some((f) => f.id === gameId)) return false;
+    favorites.push({ id: gameId, slug: gameSlug });
+    saveFavorites(favorites, email);
+    return true;
+};
 
-        // Voeg toe
-        favorites.push({ id: gameId, slug: gameSlug });
-        saveFavorites(favorites);
-        return true;
-    } catch (error) {
-        console.error('Error adding favorite:', error);
+export const removeFavorite = (gameId, email) => {
+    const favorites = getFavorites(email);
+    const filtered = favorites.filter((f) => f.id !== gameId);
+    if (filtered.length === favorites.length) return false;
+    saveFavorites(filtered, email);
+    return true;
+};
+
+export const toggleFavorite = (gameId, gameSlug, email) => {
+    if (isFavorite(gameId, email)) {
+        removeFavorite(gameId, email);
         return false;
     }
+    addFavorite(gameId, gameSlug, email);
+    return true;
 };
 
-export const removeFavorite = (gameId) => {
-    try {
-        const favorites = getFavorites();
-        const filtered = favorites.filter(fav => fav.id !== gameId);
-
-        if (filtered.length === favorites.length) {
-            return false;
-        }
-
-        saveFavorites(filtered);
-        return true;
-    } catch (error) {
-        console.error('Error removing favorite:', error);
-        return false;
-    }
-};
-
-export const toggleFavorite = (gameId, gameSlug) => {
-    if (isFavorite(gameId)) {
-        removeFavorite(gameId);
-        return false;
-    } else {
-        addFavorite(gameId, gameSlug);
-        return true;
-    }
-};
-
-export const initializeFavoritesFromJSON = () => {
-    try {
-        const existing = localStorage.getItem('gameFavorites');
-        if (existing) {
-            return;
-        }
-
-        // Gebruik geïmporteerde JSON data
-        localStorage.setItem('gameFavorites', JSON.stringify(favoritenData));
-    } catch (error) {
-        console.error('Error initializing favorites:', error);
-    }
-};
-
-// Event listener systeem voor realtime updates
+// Event listeners voor realtime UI-updates
 const listeners = new Set();
-
 export const subscribeFavoriteChanges = (callback) => {
     listeners.add(callback);
     return () => listeners.delete(callback);
 };
-
-const notifyListeners = () => {
-    listeners.forEach(callback => callback());
+const notifyListeners = (email) => {
+    listeners.forEach((cb) => {
+        try { cb(email || currentEmail()); } catch {}
+    });
 };
