@@ -5,11 +5,16 @@ import './FavorietenGebruiker.css';
 import ButtonPrimary from '../ButtonPrimary/ButtonPrimary';
 import ButtonSecondary from '../ButtonSecondary/ButtonSecondary';
 import GameCard from "../GameCard/GameCard";
-import { getFavorites, initializeFavoritesFromJSON } from "../../utils/favoritesManager";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner.jsx";
+import {
+    fetchFavoritesFromBackend,
+    subscribeFavoriteChanges
+} from "../../utils/favoritesManager";
+import { getAuth } from "../../utils/authentication";
 
-function Favorieten() {
-    const [allGames, setAllGames] = useState([]);
+function FavorietenGebruiker() {
+    const [favorites, setFavorites] = useState([]);
+    const [gamesData, setGamesData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchParams, setSearchParams] = useSearchParams();
@@ -17,7 +22,6 @@ function Favorieten() {
     const gamesPerPage = 8;
 
     const BASE_URL = import.meta.env.VITE_BASE_URL;
-
     const currentPage = parseInt(searchParams.get('page')) || 1;
 
     useEffect(() => {
@@ -27,59 +31,76 @@ function Favorieten() {
     }, []);
 
     useEffect(() => {
-        // Initialiseer favorieten vanuit JSON als localStorage leeg is
-        const initialize = async () => {
-            await initializeFavoritesFromJSON();
-            fetchFavoriteGames();
-        };
-        initialize();
+        loadFavorites();
+
+        const unsubscribe = subscribeFavoriteChanges(() => {
+            loadFavorites();
+        });
+
+        return () => unsubscribe();
     }, []);
 
-    const fetchFavoriteGames = async () => {
+    const loadFavorites = async () => {
+        const { user } = getAuth();
+        if (!user?.id) {
+            setLoading(false);
+            return;
+        }
+
         try {
             setLoading(true);
             setError(null);
 
-            // Haal favorieten op uit localStorage
-            const favoriteGames = getFavorites();
+            // Haal favorieten op uit backend
+            const backendFavorites = await fetchFavoritesFromBackend(user.id);
+            setFavorites(backendFavorites);
 
-            if (favoriteGames.length === 0) {
-                setAllGames([]);
+            if (backendFavorites.length === 0) {
+                setGamesData([]);
                 setLoading(false);
                 return;
             }
 
-            const gamePromises = favoriteGames.map(fav =>
+            // Haal game details op
+            const gamePromises = backendFavorites.map(fav =>
                 axios.get(`${BASE_URL}/games/${fav.slug}`, {
                     params: { key: import.meta.env.VITE_API_KEY }
+                }).catch(err => {
+                    console.error(`Failed to fetch game ${fav.slug}:`, err);
+                    return null;
                 })
             );
 
             const gamesResponses = await Promise.all(gamePromises);
-            const gamesData = gamesResponses.map(response => response.data);
-            setAllGames(gamesData);
+            const games = gamesResponses
+                .filter(response => response !== null)
+                .map(response => response.data);
+
+            setGamesData(games);
         } catch (err) {
-            console.error('Error fetching favorite games:', err);
-            setError(err.response?.data?.message || err.message);
+            console.error('Error loading favorites:', err);
+            setError(err.message);
         } finally {
             setLoading(false);
         }
     };
 
-    const removeFavorite = (gameId) => {
-        const newGames = allGames.filter(game => game.id !== gameId);
-        setAllGames(newGames);
+    const handleFavoriteRemoved = (gameId) => {
+        // Update local state
+        setGamesData(prev => prev.filter(game => game.id !== gameId));
+        setFavorites(prev => prev.filter(fav => fav.gameId !== gameId));
 
-        const newTotalPages = Math.ceil(newGames.length / gamesPerPage);
+        // Controleer aantal
+        const newTotalPages = Math.ceil((gamesData.length - 1) / gamesPerPage);
         if (currentPage > newTotalPages && newTotalPages > 0) {
             setSearchParams({ page: newTotalPages });
         }
     };
 
-    const totalPages = Math.ceil(allGames.length / gamesPerPage);
+    const totalPages = Math.ceil(gamesData.length / gamesPerPage);
     const indexOfLastGame = currentPage * gamesPerPage;
     const indexOfFirstGame = indexOfLastGame - gamesPerPage;
-    const currentGames = allGames.slice(indexOfFirstGame, indexOfLastGame);
+    const currentGames = gamesData.slice(indexOfFirstGame, indexOfLastGame);
 
     const handlePageChange = (pageNumber) => {
         setSearchParams({ page: pageNumber });
@@ -99,7 +120,9 @@ function Favorieten() {
         const maxVisible = 4;
         let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
         let endPage = Math.min(totalPages, startPage + maxVisible - 1);
-        if (endPage - startPage < maxVisible - 1) startPage = Math.max(1, endPage - maxVisible + 1);
+        if (endPage - startPage < maxVisible - 1) {
+            startPage = Math.max(1, endPage - maxVisible + 1);
+        }
         for (let i = startPage; i <= endPage; i++) pages.push(i);
         return pages;
     };
@@ -107,7 +130,7 @@ function Favorieten() {
     if (loading) {
         return (
             <div className="favorieten-lijst-container">
-                <LoadingSpinner text={"Favorieten worden geladen"}/>
+                <LoadingSpinner text={"Favorieten worden geladen"} />
             </div>
         );
     }
@@ -116,21 +139,22 @@ function Favorieten() {
         return (
             <div className="favorieten-lijst-container">
                 <div className="favorieten-error">
-                    <h2>Fout bij het laden van games</h2>
+                    <h2>Fout bij het laden van favorieten</h2>
                     <p>{error}</p>
-                    <ButtonPrimary onClick={fetchFavoriteGames}>Opnieuw proberen</ButtonPrimary>
+                    <ButtonPrimary onClick={loadFavorites}>Opnieuw proberen</ButtonPrimary>
                 </div>
             </div>
         );
     }
 
-    if (allGames.length === 0) {
+    if (gamesData.length === 0) {
         return (
             <div className="favorieten-lijst-container">
                 <div className="favorieten-empty">
                     <div className="favorieten-empty__icon"></div>
                     <h2>Nog geen favorieten</h2>
                     <p>Begin met het toevoegen van games aan je favorieten!</p>
+                    <ButtonPrimary to="/ontdekken">Ontdek Games</ButtonPrimary>
                 </div>
             </div>
         );
@@ -140,7 +164,12 @@ function Favorieten() {
         <div className="favorieten-lijst-container">
             <div className="favorieten-grid">
                 {currentGames.map((game) => (
-                    <GameCard key={game.id} game={game} removeFavorite={removeFavorite} />
+                    <GameCard
+                        key={game.id}
+                        game={game}
+                        favorites={favorites}
+                        onFavoriteChange={handleFavoriteRemoved}
+                    />
                 ))}
             </div>
 
@@ -177,4 +206,4 @@ function Favorieten() {
     );
 }
 
-export default Favorieten;
+export default FavorietenGebruiker;

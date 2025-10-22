@@ -11,9 +11,12 @@ import ShortDescription from '../../components/ShortDescription/ShortDescription
 import FilterSection from '../../components/FilterSection/FilterSection';
 import GenreCarousel from '../../components/GenreCarousel/GenreCarousel';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
+import { fetchFavoritesFromBackend, subscribeFavoriteChanges } from '../../utils/favoritesManager';
+import { getAuth } from '../../utils/authentication';
 
 function Ontdekken() {
     const [games, setGames] = useState([]);
+    const [favorites, setFavorites] = useState([]);
     const [totalCount, setTotalCount] = useState(0);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -38,7 +41,31 @@ function Ontdekken() {
 
     useEffect(() => {
         fetchGames();
+        loadFavorites();
     }, [currentPage, selectedGenre, selectedPlatform, selectedFeatures, sortOrder]);
+
+    useEffect(() => {
+        // Subscribe to favorite changes
+        const unsubscribe = subscribeFavoriteChanges(() => {
+            loadFavorites();
+        });
+        return () => unsubscribe();
+    }, []);
+
+    const loadFavorites = async () => {
+        const { user } = getAuth();
+        if (!user?.id) {
+            setFavorites([]);
+            return;
+        }
+
+        try {
+            const favs = await fetchFavoritesFromBackend(user.id);
+            setFavorites(favs);
+        } catch (error) {
+            console.error('Error loading favorites:', error);
+        }
+    };
 
     const fetchGames = async () => {
         try {
@@ -165,7 +192,12 @@ function Ontdekken() {
                         <div className="ontdekken-games">
                             <div className="ontdekken-grid">
                                 {games.map((game) => (
-                                    <GameCard key={game.id} game={game} showFavoriteButton={true} />
+                                    <GameCard
+                                        key={game.id}
+                                        game={game}
+                                        favorites={favorites}
+                                        showFavoriteButton={true}
+                                    />
                                 ))}
                             </div>
 

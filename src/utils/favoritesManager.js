@@ -1,62 +1,94 @@
-// Per-account favorites: opgeslagen onder key "gameFavorites:<email>"
-const KEY_PREFIX = 'gameFavorites:';
+import { api } from './authentication.js';
 
-const currentEmail = () =>
-    (localStorage.getItem('user_email') || 'anonymous').toLowerCase();
-
-const keyFor = (email) => `${KEY_PREFIX}${(email || currentEmail()).toLowerCase()}`;
-
-const safeParse = (v, fallback) => {
-    try { return JSON.parse(v); } catch { return fallback; }
-};
-
-// --- Public API ---
-export const getFavorites = (email) => {
-    const list = safeParse(localStorage.getItem(keyFor(email)), null);
-    return Array.isArray(list) ? list : [];
-};
-
-const saveFavorites = (favorites, email) => {
-    localStorage.setItem(keyFor(email), JSON.stringify(favorites));
-    notifyListeners(email);
-};
-
-export const isFavorite = (gameId, email) =>
-    getFavorites(email).some((fav) => fav.id === gameId);
-
-export const addFavorite = (gameId, gameSlug, email) => {
-    const favorites = getFavorites(email);
-    if (favorites.some((f) => f.id === gameId)) return false;
-    favorites.push({ id: gameId, slug: gameSlug });
-    saveFavorites(favorites, email);
-    return true;
-};
-
-export const removeFavorite = (gameId, email) => {
-    const favorites = getFavorites(email);
-    const filtered = favorites.filter((f) => f.id !== gameId);
-    if (filtered.length === favorites.length) return false;
-    saveFavorites(filtered, email);
-    return true;
-};
-
-export const toggleFavorite = (gameId, gameSlug, email) => {
-    if (isFavorite(gameId, email)) {
-        removeFavorite(gameId, email);
-        return false;
-    }
-    addFavorite(gameId, gameSlug, email);
-    return true;
-};
-
-// Event listeners voor realtime UI-updates
 const listeners = new Set();
-export const subscribeFavoriteChanges = (callback) => {
+
+// Haalt de favorieten op van de ingelogde gebruiker
+
+export async function fetchFavoritesFromBackend(userId) {
+    try {
+        const { data } = await api.get(`/api/favorites?userId=${userId}`);
+        return data || [];
+    } catch (error) {
+        console.error('Error fetching favorites:', error);
+        return [];
+    }
+}
+
+// Voeg favorieten toe
+
+export async function addFavoriteToBackend(userId, gameId, gameSlug) {
+    try {
+        // Haalt alle favorieten op om het laatste ID te bepalen
+        const allFavorites = await api.get('/api/favorites');
+        const maxId = allFavorites.data.reduce((max, fav) =>
+            Math.max(max, fav.id || 0), 0
+        );
+
+        const { data } = await api.post('/api/favorites', {
+            id: maxId + 1,
+            userId,
+            gameId,
+            slug: gameSlug
+        });
+
+        notifyListeners();
+        return data;
+    } catch (error) {
+        console.error('Error adding favorite:', error);
+        throw error;
+    }
+}
+
+// Verwijder favorieten
+
+export async function removeFavoriteFromBackend(favoriteId) {
+    try {
+        await api.delete(`/api/favorites/${favoriteId}`);
+        notifyListeners();
+        return true;
+    } catch (error) {
+        console.error('Error removing favorite:', error);
+        throw error;
+    }
+}
+
+// Check of game favoriet is
+
+export function isFavorite(gameId, favorites) {
+    return favorites.some(fav => fav.gameId === gameId);
+}
+
+// Vind favoriet op basis van gameId
+
+export function findFavorite(gameId, favorites) {
+    return favorites.find(fav => fav.gameId === gameId);
+}
+
+// Toggle favoriet (toevoegen of verwijderen)
+
+export async function toggleFavorite(userId, gameId, gameSlug, favorites) {
+    const existing = findFavorite(gameId, favorites);
+
+    if (existing) {
+        await removeFavoriteFromBackend(existing.id);
+        return { isFavorite: false, action: 'removed' };
+    } else {
+        await addFavoriteToBackend(userId, gameId, gameSlug);
+        return { isFavorite: true, action: 'added' };
+    }
+}
+
+// Event listeners
+
+export function subscribeFavoriteChanges(callback) {
     listeners.add(callback);
     return () => listeners.delete(callback);
-};
-const notifyListeners = (email) => {
-    listeners.forEach((cb) => {
-        try { cb(email || currentEmail()); } catch {}
+}
+
+function notifyListeners() {
+    listeners.forEach(cb => {
+        try { cb(); } catch (error) {
+            console.error('Listener error:', error);
+        }
     });
-};
+}
