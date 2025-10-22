@@ -1,6 +1,6 @@
 .highlighted-games-section {
     max-width: 1440px;
-    margin: 0 auto;
+    margin: var(--sp-48) auto 0 auto;
 }
 
 .section-title {
@@ -105,6 +105,7 @@
 
     .highlighted-games-section {
         padding: var(--sp-32) 0;
+        margin: 0 auto 0 auto;
     }
 }
 
