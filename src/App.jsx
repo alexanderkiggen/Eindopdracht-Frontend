@@ -61,11 +61,11 @@ function App() {
     ];
 
     const genreLinks = [
-        { to: '#', children: 'Action' },
-        { to: '#', children: 'Adventure' },
-        { to: '#', children: 'Role-Playing Game' },
-        { to: '#', children: 'Shooter' },
-        { to: '#', children: 'Sports' },
+        { to: '/ontdekken?genre=action', children: 'Action' },
+        { to: '/ontdekken?genre=adventure', children: 'Adventure' },
+        { to: '/ontdekken?genre=casual', children: 'Casual' },
+        { to: '/ontdekken?genre=shooter', children: 'Shooter' },
+        { to: '/ontdekken?genre=strategy', children: 'Strategy' },
     ];
 
     const socialLinks = [
