@@ -109,15 +109,6 @@ function FilterSection({ selectedGenre, selectedPlatform, selectedFeatures, onFi
                 </button>
                 {openSection === 'genre' && (
                     <div className="filter-group__content">
-                        <label className="filter-checkbox">
-                            <input
-                                type="radio"
-                                name="genre"
-                                checked={!selectedGenre}
-                                onChange={() => onFilterChange('genre', '')}
-                            />
-                            <span>Alle genres</span>
-                        </label>
                         {genres.map((genre) => (
                             <label key={genre.slug} className="filter-checkbox">
                                 <input
