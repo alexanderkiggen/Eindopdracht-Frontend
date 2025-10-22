@@ -10,16 +10,21 @@ import XboxIcon from "../../assets/icons/xbox.svg";
 import WindowsIcon from "../../assets/icons/windows.svg";
 import NoImage from "../../assets/images/no-image.png";
 
-import { toggleFavorite, isFavorite, subscribeFavoriteChanges } from "../../utils/favoritesManager";
+import { toggleFavorite, isFavorite as checkIsFavorite } from "../../utils/favoritesManager";
+import { getAuth } from "../../utils/authentication";
 
-function GameCard({ game, removeFavorite, showFavoriteButton = true, onFavoriteChange }) {
+function GameCard({ game, favorites = [], onFavoriteChange, showFavoriteButton = true }) {
     const navigate = useNavigate();
-    const [isFav, setIsFav] = useState(() => isFavorite(game.id));
+    const [isFav, setIsFav] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
+    const { user } = getAuth();
 
-    // Check status opnieuw als game.id verandert
+    // Controleer favorieten status
     useEffect(() => {
-        setIsFav(isFavorite(game.id));
-    }, [game.id]);
+        if (favorites && Array.isArray(favorites)) {
+            setIsFav(checkIsFavorite(game.id, favorites));
+        }
+    }, [game.id, favorites]);
 
     const getPlatformIcon = (platformName) => {
         const name = platformName.toLowerCase();
@@ -38,35 +43,36 @@ function GameCard({ game, removeFavorite, showFavoriteButton = true, onFavoriteC
     const truncateText = (text, maxLength = 125) => {
         if (!text) return "Helaas is er geen beschrijving beschikbaar voor deze game, maar je kunt wel andere gegevens bekijken op de informatie-pagina.";
 
-        // HTML tags verwijderen
         let cleanText = text.replace(/<[^>]*>/g, "");
-
-        // Alle hyperlinks (http/https + woorden zonder spatie) verwijderen
         cleanText = cleanText.replace(/https?:\/\/\S+/g, "");
-
-        // Trim dubbele spaties na verwijderen
         cleanText = cleanText.replace(/\s{2,}/g, " ").trim();
 
-        // Inkorten
         return cleanText.length > maxLength
             ? cleanText.substring(0, maxLength) + "..."
             : cleanText;
     };
 
-
-    const handleFavoriteClick = (e) => {
+    const handleFavoriteClick = async (e) => {
         e.stopPropagation();
 
-        const newFavStatus = toggleFavorite(game.id, game.slug);
-        setIsFav(newFavStatus);
+        if (!user?.id) return;
 
-        if (onFavoriteChange) {
-            onFavoriteChange(game.id, newFavStatus);
-        }
+        if (isProcessing) return;
 
-        // Dit is voor de favorietenpagina
-        if (!newFavStatus && removeFavorite) {
-            removeFavorite(game.id);
+        try {
+            setIsProcessing(true);
+
+            const result = await toggleFavorite(user.id, game.id, game.slug, favorites);
+            setIsFav(result.isFavorite);
+
+            if (onFavoriteChange) {
+                onFavoriteChange(game.id, result.isFavorite);
+            }
+        } catch (error) {
+            console.error('Error toggling favorite:', error);
+            alert('Er is iets misgegaan. Probeer het opnieuw.');
+        } finally {
+            setIsProcessing(false);
         }
     };
 
@@ -82,10 +88,12 @@ function GameCard({ game, removeFavorite, showFavoriteButton = true, onFavoriteC
                     className="favorieten-card__image"
                     loading="lazy"
                 />
-                {showFavoriteButton && (
+                {showFavoriteButton && user?.id && (
                     <button
                         onClick={handleFavoriteClick}
+                        disabled={isProcessing}
                         className={`favorieten-card__favorite-btn ${isFav ? 'favorieten-card__favorite-btn--active' : ''}`}
+                        style={{ opacity: isProcessing ? 0.5 : 1 }}
                     ></button>
                 )}
             </div>
