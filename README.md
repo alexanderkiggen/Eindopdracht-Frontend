@@ -2,7 +2,6 @@
 
 ## Inhoudsopgave
 
----
 
 1. [Inleiding](#inleiding)
 2. [Screenshots](#screenshots)
@@ -13,7 +12,6 @@
 
 ## Inleiding
 
----
 
 GameFinder is een webapplicatie gebouwd met [React](https://react.dev/) waarmee gebruikers games kunnen ontdekken, filteren en opslaan. De applicatie maakt gebruik van de [RAWG Video Games Database API](https://rawg.io/apidocs) voor game-informatie en de [NOVI Dynamic API](https://novi-backend-api-wgsgz.ondigitalocean.app/) voor gebruikersbeheer en favorieten.
 
@@ -29,14 +27,12 @@ GameFinder is een webapplicatie gebouwd met [React](https://react.dev/) waarmee 
 
 ## Screenshots
 
----
 ![GameFinder cover](./src/assets/github-cover.png)
 *De homepage van GameFinder toont populaire games en een overzicht van uitgelichte PlayStation 5 games.*
 
 
 ## Benodigdheden
 
----
 
 Om de webapplicatie te starten moet de volgende software op je systeem geïnstalleerd zijn:
 
@@ -63,7 +59,6 @@ Om de webapplicatie te starten moet de volgende software op je systeem geïnstal
 
 ## De applicatie draaien
 
----
 
 ### Stap 1: Download het project
 
@@ -126,7 +121,6 @@ De applicatie start nu op onder `http://localhost:5173/`
 
 ## Overige commando's
 
----
 
 Naast het standaard development commando zijn er nog andere npm commando's beschikbaar:
 
@@ -152,7 +146,6 @@ Na het uitvoeren van `npm run build` kun je de productie-versie lokaal testen me
 
 ## Testgebruikers
 
----
 
 De NOVI Dynamic API is vooraf geconfigureerd met twee testgebruikers. Je kunt direct inloggen met de volgende gegevens:
 
