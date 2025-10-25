@@ -28,10 +28,12 @@ function Login({ onClose, onSuccess }) {
             } else {
                 if (form.password.length < 6) {
                     setMsg('Wachtwoord moet minimaal 6 tekens zijn.');
+                    setBusy(false);
                     return;
                 }
                 if (form.password !== form.confirm) {
                     setMsg('Wachtwoorden komen niet overeen.');
+                    setBusy(false);
                     return;
                 }
                 setMsg('Bezig met registreren...');
@@ -40,11 +42,20 @@ function Login({ onClose, onSuccess }) {
                 onSuccess?.(user);
             }
         } catch (err) {
-            const apiMsg =
-                err?.response?.data?.message ||
-                (mode === 'login'
-                    ? 'Inloggen mislukt. Controleer je gegevens.'
-                    : 'Registreren mislukt. E-mailadres bestaat mogelijk al.');
+            let apiMsg;
+
+            if (mode === 'login') {
+                // Specifieke foutmelding voor login
+                if (err?.response?.status === 401) {
+                    apiMsg = 'Onbekende gegevens. Controleer je e-mailadres en wachtwoord.';
+                } else {
+                    apiMsg = err?.response?.data?.message || 'Inloggen mislukt. Probeer het opnieuw.';
+                }
+            } else {
+                // Registratie foutmeldingen
+                apiMsg = err?.message || err?.response?.data?.message || 'Registreren mislukt. Probeer het opnieuw.';
+            }
+
             setMsg(apiMsg);
         } finally {
             setBusy(false);
