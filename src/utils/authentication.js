@@ -62,6 +62,24 @@ export async function loginRequest(email, password) {
 }
 
 export async function registerRequest(email, password) {
+    // Controleer of e-mail al bestaat
+    try {
+        const { data: existingUsers } = await api.get('/api/users');
+        const userExists = existingUsers.some(user =>
+            user.email.toLowerCase() === email.toLowerCase()
+        );
+
+        if (userExists) {
+            throw new Error('Dit e-mailadres is al in gebruik');
+        }
+    } catch (error) {
+        if (error.message === 'Dit e-mailadres is al in gebruik') {
+            throw error;
+        }
+
+        console.warn('Could not check existing users:', error);
+    }
+
     // Account aanmaken = userId ontvangen
     const { data: userData } = await api.post(
         '/api/users',
