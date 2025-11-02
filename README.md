@@ -147,7 +147,7 @@ Na het uitvoeren van `npm run build` kun je de productie-versie lokaal testen me
 ## Testgebruikers
 
 
-De NOVI Dynamic API is vooraf geconfigureerd met twee testgebruikers. Je kunt direct inloggen met de volgende gegevens:
+De NOVI Dynamic API is vooraf geconfigureerd met twee testgebruikers. Er is geen verschil tussen admin en normale gebruiker accounts. Je kunt direct inloggen met onderstaande gegevens:
 
 ### Account 1:
 
