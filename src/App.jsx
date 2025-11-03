@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import {useEffect, useState} from 'react';
+import {BrowserRouter as Router, Route, Routes, useLocation} from 'react-router-dom';
 
 import './App.css';
 
@@ -22,12 +22,15 @@ import TwitchLogo from './assets/Socials/twitch.png';
 import XLogo from './assets/Socials/x.png';
 import YoutubeLogo from './assets/Socials/youtube.png';
 
-import { getAuth, clearAuth } from './utils/authentication.js';
+import {clearAuth, getAuth} from './utils/authentication.js';
 
 // Naar boven scrollen bij het openen van een nieuwe pagina
 function ScrollToTop() {
-    const { pathname, hash } = useLocation();
-    useEffect(() => { if (!hash) window.scrollTo(0, 0); }, [pathname, hash]);
+    const {pathname, hash} = useLocation();
+    useEffect(() => {
+        // Scroll alleen naar X0,Y0 als er geen hash (#) in de URL staat: (http://localhost:5173/zoeken#sectie-twee)
+        if (!hash) window?.scrollTo(0, 0);
+    }, [pathname, hash]);
     return null;
 }
 
@@ -50,7 +53,9 @@ function App() {
 
     useEffect(() => {
         document.body.style.overflow = isLoginOpen ? 'hidden' : '';
-        return () => { document.body.style.overflow = ''; };
+        return () => {
+            document.body.style.overflow = '';
+        };
     }, [isLoginOpen]);
 
     const pageLinks = [
@@ -81,7 +86,7 @@ function App() {
 
     return (
         <Router>
-            <ScrollToTop />
+            <ScrollToTop/>
             <div className="app">
                 <NavBar
                     NavigationLinkOneTo="/ontdekken"
@@ -98,19 +103,19 @@ function App() {
 
                 <div className="routes-container">
                     <Routes>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/ontdekken" element={<Ontdekken />} />
-                        <Route path="/informatie/:game_slug" element={<Informatie />} />
-                        <Route path="/keuzehulp" element={<Keuzehulp />} />
-                        <Route path="/favorieten" element={<Favorieten user={auth.user} />} />
-                        <Route path="/zoeken" element={<Zoeken />} />
-                        <Route path="*" element={<NotFound />} />
+                        <Route path="/" element={<Home/>}/>
+                        <Route path="/ontdekken" element={<Ontdekken/>}/>
+                        <Route path="/informatie/:game_slug" element={<Informatie/>}/>
+                        <Route path="/keuzehulp" element={<Keuzehulp/>}/>
+                        <Route path="/favorieten" element={<Favorieten user={auth.user}/>}/>
+                        <Route path="/zoeken" element={<Zoeken/>}/>
+                        <Route path="*" element={<NotFound/>}/>
                     </Routes>
                 </div>
 
-                {isLoginOpen && <Login onClose={closeLogin} onSuccess={handleLoginSuccess} />}
+                {isLoginOpen && <Login onClose={closeLogin} onSuccess={handleLoginSuccess}/>}
 
-                <Footer pageLinks={pageLinks} genreLinks={genreLinks} socialLinks={socialLinks} />
+                <Footer pageLinks={pageLinks} genreLinks={genreLinks} socialLinks={socialLinks}/>
             </div>
         </Router>
     );

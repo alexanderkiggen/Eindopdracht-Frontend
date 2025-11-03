@@ -5,17 +5,17 @@ import ShortDescription from '../../components/ShortDescription/ShortDescription
 function Favorieten({ user }) {
     if (!user) {
         return (
-            <div className="favorieten-container">
+            <main className="favorieten-container">
                 <h1>Favorieten</h1>
                 <div className="favorieten-boodschap">
                     <p>Niet geautoriseerd. Log in via <strong>Inloggen</strong> in de navigatie.</p>
                 </div>
-            </div>
+            </main>
         );
     }
 
     return (
-        <div className="favorieten-container">
+        <main className="favorieten-container">
             <h1>Favorieten</h1>
             <section className="short-desc">
                 <ShortDescription maxLength={55}
@@ -29,7 +29,7 @@ function Favorieten({ user }) {
                 />
             </section>
             <FavorietenGebruiker user={user} />
-        </div>
+        </main>
     );
 }
 

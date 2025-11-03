@@ -1,30 +1,29 @@
 /* Import font */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 
-/* GameFinder Design Tokens */
 :root {
     /* Kleuren */
-    --color-bg:            #101014; /* achtergrond */
-    --color-surface:       #28282C; /* kaders / cards */
-    --color-nav-footer:           #121216;
+    --color-bg: #101014; /* achtergrond */
+    --color-surface: #28282C; /* kaders / cards */
+    --color-nav-footer: #121216;
 
-    --color-accent:        #26BBFF; /* blauw */
-    --color-accent-hover:  #81d3ff;
+    --color-accent: #26BBFF; /* blauw */
+    --color-accent-hover: #81d3ff;
 
-    --color-neutral:       #353539; /* grijs accent */
+    --color-neutral: #353539; /* grijs accent */
     --color-neutral-hover: #656567;
 
     --color-neutral-on-neutral: #8b8b8f;
 
-    --color-muted:          #BDBDBF;
-    --color-white:          #ffffff;
-    --color-black:          #000000;
-    --color-link:           #4ebbff;
-    --color-link-hover:     #81d3ff;
+    --color-muted: #BDBDBF;
+    --color-white: #ffffff;
+    --color-black: #000000;
+    --color-link: #4ebbff;
+    --color-link-hover: #81d3ff;
 
     /* Ronde hoeken */
     --radius-sm: 3px;
-    --radius-md: 5px;      /* default */
+    --radius-md: 5px; /* default */
     --radius-lg: 10px;
     --radius-round: 999px;
 
@@ -80,18 +79,46 @@ h1, h2, h3, h4, h5, h6 {
     margin: 0 0 var(--sp-12);
 }
 
-h1 { font-size: var(--fs-32); }
-h2 { font-size: var(--fs-24); }
-h3 { font-size: var(--fs-18); }
-h4 { font-size: var(--fs-16); }
-h5, h6 { font-size: var(--fs-14); }
+h1 {
+    font-size: var(--fs-32);
+}
+
+h2 {
+    font-size: var(--fs-24);
+}
+
+h3 {
+    font-size: var(--fs-18);
+}
+
+h4 {
+    font-size: var(--fs-16);
+}
+
+h5, h6 {
+    font-size: var(--fs-14);
+}
 
 @media (max-width: 640px) {
-    h1 { font-size: var(--fs-28); }
-    h2 { font-size: var(--fs-24); }
-    h3 { font-size: var(--fs-18); }
-    h4 { font-size: var(--fs-16); }
-    h5, h6 { font-size: var(--fs-14); }
+    h1 {
+        font-size: var(--fs-28);
+    }
+
+    h2 {
+        font-size: var(--fs-24);
+    }
+
+    h3 {
+        font-size: var(--fs-18);
+    }
+
+    h4 {
+        font-size: var(--fs-16);
+    }
+
+    h5, h6 {
+        font-size: var(--fs-14);
+    }
 }
 
 /* Reset input, textarea, select and button */
@@ -111,10 +138,10 @@ button {
     line-height: inherit;
     text-align: inherit;
     box-shadow: none;
-    appearance: none;       /* removes browser-specific styles */
+    appearance: none; /* removes browser-specific styles */
     -webkit-appearance: none;
     -moz-appearance: none;
-    border-radius: 0;       /* removes iOS rounding */
+    border-radius: 0; /* removes iOS rounding */
 }
 
 /* Reset placeholder styling */

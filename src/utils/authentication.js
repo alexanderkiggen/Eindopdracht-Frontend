@@ -1,8 +1,5 @@
 import axios from 'axios';
 
-const BASE = import.meta.env.VITE_NOVI_PROJECT_URL;
-const PROJECT_ID = import.meta.env.VITE_NOVI_PROJECT_KEY;
-
 const STORAGE_TOKEN_KEY = 'token';
 const STORAGE_USER_KEY = 'user_data';
 
@@ -32,10 +29,10 @@ export function clearAuth() {
     localStorage.removeItem(STORAGE_USER_KEY);
 }
 
-export const api = axios.create({ baseURL: BASE });
+export const api = axios.create({ baseURL: import.meta.env.VITE_NOVI_PROJECT_URL });
 
 api.interceptors.request.use((cfg) => {
-    if (PROJECT_ID) cfg.headers['novi-education-project-id'] = PROJECT_ID;
+    if (import.meta.env.VITE_NOVI_PROJECT_KEY) cfg.headers['novi-education-project-id'] = import.meta.env.VITE_NOVI_PROJECT_KEY;
     const { token } = getAuth();
     if (token) cfg.headers.Authorization = `Bearer ${token}`;
     return cfg;

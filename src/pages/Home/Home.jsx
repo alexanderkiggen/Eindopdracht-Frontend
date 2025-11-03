@@ -5,10 +5,10 @@ import UitgelichtGames from '../../components/UitgelichtGames/UitgelichtGames.js
 
 function Home() {
     return (
-        <div className="home-container">
+        <main className="home-container">
             <HeaderPopularGames />
             <UitgelichtGames />
-        </div>
+        </main>
     );
 }
 

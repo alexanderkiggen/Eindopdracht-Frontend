@@ -1,23 +1,23 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import {useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
 
 import "./GameCard.css";
 
 import RatingGame from "../RatingGame/RatingGame.jsx";
 import ButtonPrimary from "../ButtonPrimary/ButtonPrimary.jsx";
-import PlayStationIcon from "../../assets/icons/playstation.svg";
-import XboxIcon from "../../assets/icons/xbox.svg";
-import WindowsIcon from "../../assets/icons/windows.svg";
+import PlayStationIcon from "../../assets/icons/playstation.png";
+import XboxIcon from "../../assets/icons/xbox.png";
+import WindowsIcon from "../../assets/icons/windows.png";
 import NoImage from "../../assets/images/no-image.png";
 
-import { toggleFavorite, isFavorite as checkIsFavorite } from "../../utils/favoritesManager";
-import { getAuth } from "../../utils/authentication";
+import {isFavorite as checkIsFavorite, toggleFavorite} from "../../utils/favoritesManager";
+import {getAuth} from "../../utils/authentication";
 
-function GameCard({ game, favorites = [], onFavoriteChange, showFavoriteButton = true }) {
+function GameCard({game, favorites = [], onFavoriteChange, showFavoriteButton = true}) {
     const navigate = useNavigate();
     const [isFav, setIsFav] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
-    const { user } = getAuth();
+    const {user} = getAuth();
 
     // Controleer favorieten status
     useEffect(() => {
@@ -29,13 +29,13 @@ function GameCard({ game, favorites = [], onFavoriteChange, showFavoriteButton =
     const getPlatformIcon = (platformName) => {
         const name = platformName.toLowerCase();
         if (name.includes("playstation") || name.includes("ps")) {
-            return <img src={PlayStationIcon} alt="PlayStation" className="favorieten-card__platform-icon" />;
+            return <img src={PlayStationIcon} alt="PlayStation" className="favorieten-card__platform-icon" loading="lazy"/>;
         }
         if (name.includes("xbox")) {
-            return <img src={XboxIcon} alt="Xbox" className="favorieten-card__platform-icon" />;
+            return <img src={XboxIcon} alt="Xbox" className="favorieten-card__platform-icon" loading="lazy"/>;
         }
         if (name.includes("pc") || name.includes("windows")) {
-            return <img src={WindowsIcon} alt="PC" className="favorieten-card__platform-icon" />;
+            return <img src={WindowsIcon} alt="PC" className="favorieten-card__platform-icon" loading="lazy"/>;
         }
         return null;
     };
@@ -47,9 +47,7 @@ function GameCard({ game, favorites = [], onFavoriteChange, showFavoriteButton =
         cleanText = cleanText.replace(/https?:\/\/\S+/g, "");
         cleanText = cleanText.replace(/\s{2,}/g, " ").trim();
 
-        return cleanText.length > maxLength
-            ? cleanText.substring(0, maxLength) + "..."
-            : cleanText;
+        return cleanText.length > maxLength ? cleanText.substring(0, maxLength) + "..." : cleanText;
     };
 
     const handleFavoriteClick = async (e) => {
@@ -77,7 +75,7 @@ function GameCard({ game, favorites = [], onFavoriteChange, showFavoriteButton =
     };
 
     return (
-        <div key={game.id} className="favorieten-card">
+        <article key={game.id} className="favorieten-card">
             <div
                 className="favorieten-card__image-wrapper"
                 onClick={() => navigate(`/informatie/${game.slug}`)}
@@ -93,17 +91,15 @@ function GameCard({ game, favorites = [], onFavoriteChange, showFavoriteButton =
                         onClick={handleFavoriteClick}
                         disabled={isProcessing}
                         className={`favorieten-card__favorite-btn ${isFav ? 'favorieten-card__favorite-btn--active' : ''}`}
-                        style={{ opacity: isProcessing ? 0.5 : 1 }}
-                    ></button>
+                        style={{opacity: isProcessing ? 0.5 : 1}}
+                    />
                 )}
             </div>
 
             <div className="favorieten-card__content">
                 <div className="favorieten-card__header">
                     <p className="favorieten-card__maker">
-                        {game.developers && game.developers.length > 0
-                            ? game.developers[0].name
-                            : "Onbekende ontwikkelaar"}
+                        {game.developers && game.developers.length > 0 ? game.developers[0].name : "Onbekende ontwikkelaar"}
                     </p>
                     <h3 className="favorieten-card__title">{game.name}</h3>
                     <p className="favorieten-card__description">
@@ -113,7 +109,7 @@ function GameCard({ game, favorites = [], onFavoriteChange, showFavoriteButton =
 
                 <div className="favorieten-card__footer">
                     <div className="favorieten-card__rating">
-                        <RatingGame gameRating={game.rating} />
+                        <RatingGame gameRating={game.rating}/>
                     </div>
                     <div className="favorieten-card__actions">
                         <ButtonPrimary to={`/informatie/${game.slug}`}>
@@ -129,7 +125,7 @@ function GameCard({ game, favorites = [], onFavoriteChange, showFavoriteButton =
                     </div>
                 </div>
             </div>
-        </div>
+        </article>
     );
 }
 

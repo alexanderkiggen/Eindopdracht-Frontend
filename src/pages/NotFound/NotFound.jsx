@@ -8,7 +8,7 @@ function NotFound() {
     };
 
     return (
-        <div className="notfound-container">
+        <main className="notfound-container">
             <div className="notfound-content">
                 <h1 className="notfound-code">404</h1>
                 <h2 className="notfound-title">Pagina niet gevonden</h2>
@@ -25,7 +25,7 @@ function NotFound() {
                     </ButtonPrimary>
                 </div>
             </div>
-        </div>
+        </main>
     );
 }
 

@@ -58,6 +58,7 @@
     font-size: var(--fs-14);
     margin: 0 5px;
 }
+
 .navbar__navlink__active {
     border-bottom: 2px solid var(--color-white);
 }
@@ -143,6 +144,7 @@
     display: none;
 }
 
+/* Responsive */
 @media (max-width: 1080px) {
     .navbar__container {
         align-items: center;
@@ -218,6 +220,7 @@
     .no-scroll body {
         overflow: hidden;
     }
+
     .navbar__search-icon {
         left: -20px;
         top: 42%
@@ -228,6 +231,7 @@
     .navbar__container {
         padding: 0 var(--sp-16);
     }
+
     .navbar__collapsible[data-state="open"] {
         padding: 0 var(--sp-16) var(--sp-16) var(--sp-16);
     }

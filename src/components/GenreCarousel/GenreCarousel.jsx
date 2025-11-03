@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react';
+import {useEffect, useRef, useState} from 'react';
 import './GenreCarousel.css';
 
 import actionImg from '../../assets/genre/action.jpg';
@@ -12,7 +12,7 @@ import shooterImg from '../../assets/genre/shooter.jpg';
 import simulationImg from '../../assets/genre/simulation.jpg';
 import strategyImg from '../../assets/genre/strategy.jpg';
 
-function GenreCarousel({ onGenreSelect }) {
+function GenreCarousel({onGenreSelect}) {
     const scrollContainerRef = useRef(null);
     const [isAtStart, setIsAtStart] = useState(true);
     const [isAtEnd, setIsAtEnd] = useState(false);
@@ -34,7 +34,7 @@ function GenreCarousel({ onGenreSelect }) {
         const container = scrollContainerRef.current;
         if (!container) return;
 
-        const { scrollLeft, scrollWidth, clientWidth } = container;
+        const {scrollLeft, scrollWidth, clientWidth} = container;
 
         setIsAtStart(scrollLeft <= 0);
         setIsAtEnd(scrollLeft + clientWidth >= scrollWidth - 1);
@@ -53,26 +53,22 @@ function GenreCarousel({ onGenreSelect }) {
     const scroll = (direction) => {
         if (scrollContainerRef.current) {
             const scrollAmount = 300;
-            const newPosition =
-                scrollContainerRef.current.scrollLeft +
-                (direction === 'left' ? -scrollAmount : scrollAmount);
+            const newPosition = scrollContainerRef.current.scrollLeft + (direction === 'left' ? -scrollAmount : scrollAmount);
 
             scrollContainerRef.current.scrollTo({
-                left: newPosition,
-                behavior: 'smooth',
+                left: newPosition, behavior: 'smooth',
             });
         }
     };
 
     return (
-        <div className="genre-carousel">
-            <div className="genre-carousel__header">
+        <section className="genre-carousel">
+            <header className="genre-carousel__header">
                 <h2>Populaire Genres</h2>
                 <div className="genre-carousel__controls">
                     <button
                         className="genre-carousel__arrow genre-carousel__arrow--left btn--secondary"
                         onClick={() => scroll('left')}
-                        aria-label="Scroll links"
                         disabled={isAtStart}
                     >
                         ‹
@@ -80,13 +76,12 @@ function GenreCarousel({ onGenreSelect }) {
                     <button
                         className="genre-carousel__arrow genre-carousel__arrow--right btn--secondary"
                         onClick={() => scroll('right')}
-                        aria-label="Scroll rechts"
                         disabled={isAtEnd}
                     >
                         ›
                     </button>
                 </div>
-            </div>
+            </header>
 
             <div className="genre-carousel__container" ref={scrollContainerRef}>
                 <div className="genre-carousel__track">
@@ -96,7 +91,7 @@ function GenreCarousel({ onGenreSelect }) {
                             className="genre-card"
                             onClick={() => onGenreSelect(genre.slug)}
                         >
-                            <img src={genre.image} alt={genre.name} loading="lazy" />
+                            <img src={genre.image} alt={genre.name} loading="lazy"/>
                             <div className="genre-card__overlay">
                                 <p className="genre-card__title">{genre.name}</p>
                                 <p className="genre-card__subtitle">{genre.description}</p>
@@ -105,7 +100,7 @@ function GenreCarousel({ onGenreSelect }) {
                     ))}
                 </div>
             </div>
-        </div>
+        </section>
     );
 }
 

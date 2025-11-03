@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import {useEffect, useState} from 'react';
+import {useSearchParams} from 'react-router-dom';
 import axios from 'axios';
 
 import './Ontdekken.css';
@@ -11,8 +11,8 @@ import ShortDescription from '../../components/ShortDescription/ShortDescription
 import FilterSection from '../../components/FilterSection/FilterSection';
 import GenreCarousel from '../../components/GenreCarousel/GenreCarousel';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
-import { fetchFavoritesFromBackend, subscribeFavoriteChanges } from '../../utils/favoritesManager';
-import { getAuth } from '../../utils/authentication';
+import {fetchFavoritesFromBackend, subscribeFavoriteChanges} from '../../utils/favoritesManager';
+import {getAuth} from '../../utils/authentication';
 
 function Ontdekken() {
     const [games, setGames] = useState([]);
@@ -23,7 +23,6 @@ function Ontdekken() {
     const [searchParams, setSearchParams] = useSearchParams();
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 640);
 
-    const BASE_URL = import.meta.env.VITE_BASE_URL;
     const GAMES_PER_PAGE = 9;
     const PLATFORMS = '4,187,18,1,186';
 
@@ -45,7 +44,6 @@ function Ontdekken() {
     }, [currentPage, selectedGenre, selectedPlatform, selectedFeatures, sortOrder]);
 
     useEffect(() => {
-        // Subscribe to favorite changes
         const unsubscribe = subscribeFavoriteChanges(() => {
             loadFavorites();
         });
@@ -53,7 +51,7 @@ function Ontdekken() {
     }, []);
 
     const loadFavorites = async () => {
-        const { user } = getAuth();
+        const {user} = getAuth();
         if (!user?.id) {
             setFavorites([]);
             return;
@@ -82,32 +80,27 @@ function Ontdekken() {
             if (selectedGenre) params.genres = selectedGenre;
             if (selectedFeatures) params.tags = selectedFeatures;
 
-            const listResp = await axios.get(`${BASE_URL}/games`, { params });
+            const listResp = await axios.get(`${import.meta.env.VITE_BASE_URL}/games`, {params});
             const baseResults = listResp.data?.results ?? [];
             setTotalCount(listResp.data?.count || 0);
 
-            const detailPromises = baseResults.slice(0, GAMES_PER_PAGE).map((g) =>
-                axios
-                    .get(`${BASE_URL}/games/${g.slug}`, { params: { key: import.meta.env.VITE_API_KEY } })
-                    .then((r) => ({
-                        slug: g.slug,
-                        description_raw: r.data?.description_raw ?? '',
-                        developers: r.data?.developers ?? [],
-                        publishers: r.data?.publishers ?? [],
-                    }))
-                    .catch(() => ({
-                        slug: g.slug,
-                        description_raw: '',
-                        developers: [],
-                        publishers: [],
-                    })),
-            );
+            const detailPromises = baseResults.slice(0, GAMES_PER_PAGE).map((g) => axios
+                .get(`${import.meta.env.VITE_BASE_URL}/games/${g.slug}`, {params: {key: import.meta.env.VITE_API_KEY}})
+                .then((r) => ({
+                    slug: g.slug,
+                    description_raw: r.data?.description_raw ?? '',
+                    developers: r.data?.developers ?? [],
+                    publishers: r.data?.publishers ?? [],
+                }))
+                .catch(() => ({
+                    slug: g.slug, description_raw: '', developers: [], publishers: [],
+                })),);
 
             const details = await Promise.all(detailPromises);
             const detailsBySlug = new Map(details.map((d) => [d.slug, d]));
             const enriched = baseResults.map((b) => {
                 const d = detailsBySlug.get(b.slug);
-                return d ? { ...b, ...d } : b;
+                return d ? {...b, ...d} : b;
             });
 
             setGames(enriched);
@@ -121,8 +114,7 @@ function Ontdekken() {
 
     const updateFilters = (filterType, value) => {
         const newParams = new URLSearchParams(searchParams);
-        if (value) newParams.set(filterType, value);
-        else newParams.delete(filterType);
+        if (value) newParams.set(filterType, value); else newParams.delete(filterType);
         newParams.set('page', '1');
         setSearchParams(newParams);
     };
@@ -131,7 +123,7 @@ function Ontdekken() {
         const newParams = new URLSearchParams(searchParams);
         newParams.set('page', pageNumber);
         setSearchParams(newParams);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({top: 0, behavior: 'smooth'});
     };
 
     const handlePrevPage = () => {
@@ -155,32 +147,30 @@ function Ontdekken() {
     };
 
     return (
-        <div className="ontdekken-container">
-            <div className="ontdekken-header">
+        <main className="ontdekken-container">
+            <header className="ontdekken-header">
                 <h1>Ontdek Games</h1>
                 <ShortDescription
                     maxLength={65}
-                    text="Ontdek visuele hoogtes waar elke game tot leven komt in rijke kleuren, meeslepende details en unieke werelden vol verbeelding. Blader moeiteloos door een divers aanbod van genres, stijlen en verhalen — van grote AAA-avonturen tot charmante indieparels. Laat je inspireren door aanbevelingen, ontdek nieuwe favorieten en verdwaal in werelden die speciaal zijn gemaakt om te verkennen, te ontspannen en te genieten. Hier begint jouw volgende game-ervaring."
-                />
-            </div>
+                    text="Welkom op de ontdekken-pagina! Hier vind je een uitgebreide en gefilterde catalogus van games. Gebruik de genres, platforms en kenmerken aan de zijkant om jouw zoektocht te verfijnen. Duik in verschillende stijlen en verhalen, van intense actie tot ontspannen puzzels. Of je nu op zoek bent naar de nieuwste AAA-titel, een specifieke co-op game voor de PlayStation, of een verborgen parel in het indie-genre, onze filters helpen je om moeiteloos jouw volgende game-avontuur te selecteren." />
+            </header>
 
             {loading && (
-                <LoadingSpinner />
+                <LoadingSpinner/>
             )}
 
             {!loading && error && (
-                <div className="ontdekken-error">
+                <div className="ontdekken-error" role="alert">
                     <h2>Fout bij het laden van games</h2>
                     <p>{error}</p>
                     <ButtonPrimary onClick={fetchGames}>Opnieuw proberen</ButtonPrimary>
                 </div>
             )}
 
-            {!loading && !error && (
-                <>
-                    <GenreCarousel onGenreSelect={(genre) => updateFilters('genre', genre)} />
+            {!loading && !error && (<>
+                    <GenreCarousel onGenreSelect={(genre) => updateFilters('genre', genre)}/>
 
-                    <div className="ontdekken-content">
+                    <section className="ontdekken-content">
                         <FilterSection
                             selectedGenre={selectedGenre}
                             selectedPlatform={selectedPlatform}
@@ -189,7 +179,7 @@ function Ontdekken() {
                             onFilterChange={updateFilters}
                         />
 
-                        <div className="ontdekken-games">
+                        <section className="ontdekken-games">
                             <div className="ontdekken-grid">
                                 {games.map((game) => (
                                     <GameCard
@@ -201,7 +191,7 @@ function Ontdekken() {
                                 ))}
                             </div>
 
-                            <div className="ontdekken-pagination">
+                            <nav className="ontdekken-pagination" aria-label="Game paginering">
                                 <ButtonSecondary onClick={handlePrevPage} disabled={currentPage === 1}>
                                     {isMobile ? '<' : 'Vorige Pagina'}
                                 </ButtonSecondary>
@@ -212,6 +202,7 @@ function Ontdekken() {
                                             key={pageNum}
                                             className={`ontdekken-pagination__page ${currentPage === pageNum ? 'ontdekken-pagination__page--active' : ''}`}
                                             onClick={() => handlePageChange(pageNum)}
+                                            aria-current={currentPage === pageNum ? 'page' : undefined}
                                         >
                                             {pageNum}
                                         </button>
@@ -224,13 +215,11 @@ function Ontdekken() {
                                 >
                                     {isMobile ? '>' : 'Volgende Pagina'}
                                 </ButtonSecondary>
-                            </div>
-                        </div>
-                    </div>
-                </>
-            )}
-        </div>
-    );
+                            </nav>
+                        </section>
+                    </section>
+                </>)}
+        </main>);
 }
 
 export default Ontdekken;
