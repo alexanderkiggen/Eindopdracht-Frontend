@@ -3,7 +3,6 @@ import { api } from './authentication.js';
 const listeners = new Set();
 
 // Haalt de favorieten op van de ingelogde gebruiker
-
 export async function fetchFavoritesFromBackend(userId) {
     try {
         const { data } = await api.get(`/api/favorites?userId=${userId}`);
@@ -15,7 +14,6 @@ export async function fetchFavoritesFromBackend(userId) {
 }
 
 // Voeg favorieten toe
-
 export async function addFavoriteToBackend(userId, gameId, gameSlug) {
     try {
         // Haalt alle favorieten op om het laatste ID te bepalen
@@ -40,7 +38,6 @@ export async function addFavoriteToBackend(userId, gameId, gameSlug) {
 }
 
 // Verwijder favorieten
-
 export async function removeFavoriteFromBackend(favoriteId) {
     try {
         await api.delete(`/api/favorites/${favoriteId}`);
@@ -52,20 +49,17 @@ export async function removeFavoriteFromBackend(favoriteId) {
     }
 }
 
-// Check of game favoriet is
-
+// Controleer of game favoriet is
 export function isFavorite(gameId, favorites) {
     return favorites.some(fav => fav.gameId === gameId);
 }
 
 // Vind favoriet op basis van gameId
-
 export function findFavorite(gameId, favorites) {
     return favorites.find(fav => fav.gameId === gameId);
 }
 
 // Toggle favoriet (toevoegen of verwijderen)
-
 export async function toggleFavorite(userId, gameId, gameSlug, favorites) {
     const existing = findFavorite(gameId, favorites);
 
@@ -79,7 +73,6 @@ export async function toggleFavorite(userId, gameId, gameSlug, favorites) {
 }
 
 // Event listeners
-
 export function subscribeFavoriteChanges(callback) {
     listeners.add(callback);
     return () => listeners.delete(callback);

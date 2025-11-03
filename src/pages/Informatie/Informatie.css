@@ -4,8 +4,6 @@
     padding: var(--sp-48) var(--sp-32);
 }
 
-/* Loading & Error */
-.informatie-loading,
 .informatie-error {
     min-height: 550px;
     display: flex;
@@ -345,6 +343,7 @@
     .informatie-container {
         padding: var(--sp-48) var(--sp-16);
     }
+
     .informatie-header {
         margin-bottom: 0;
     }
@@ -353,12 +352,15 @@
         height: 300px;
         margin-bottom: var(--sp-16);
     }
+
     .informatie-content {
         gap: var(--sp-16);
     }
+
     .informatie-main {
         gap: var(--sp-16);
     }
+
     .informatie-sidebar {
         gap: var(--sp-16);
     }

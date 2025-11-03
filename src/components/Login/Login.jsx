@@ -1,18 +1,17 @@
-import { useState } from 'react';
+import {useState} from 'react';
 import './Login.css';
-import { loginRequest, registerRequest } from '../../utils/authentication.js';
+import {loginRequest, registerRequest} from '../../utils/authentication.js';
+import ButtonPrimary from "../ButtonPrimary/ButtonPrimary";
 
-function Login({ onClose, onSuccess }) {
+function Login({onClose, onSuccess}) {
     const [mode, setMode] = useState('login');
-    const [form, setForm] = useState({ email: '', password: '', confirm: '' });
+    const [form, setForm] = useState({email: '', password: '', confirm: ''});
     const [busy, setBusy] = useState(false);
     const [msg, setMsg] = useState('Voer je gegevens in om in te loggen.');
 
     const swapMode = (next) => {
         setMode(next);
-        setMsg(next === 'login'
-            ? 'Voer je gegevens in om in te loggen.'
-            : 'Maak een account aan om te starten.');
+        setMsg(next === 'login' ? 'Voer je gegevens in om in te loggen.' : 'Maak een account aan om te starten.');
     };
 
     const submit = async (e) => {
@@ -22,7 +21,7 @@ function Login({ onClose, onSuccess }) {
         try {
             if (mode === 'login') {
                 setMsg('Bezig met inloggen...');
-                const { user } = await loginRequest(form.email.trim(), form.password);
+                const {user} = await loginRequest(form.email.trim(), form.password);
                 setMsg('Inloggen gelukt.');
                 onSuccess?.(user);
             } else {
@@ -37,7 +36,7 @@ function Login({ onClose, onSuccess }) {
                     return;
                 }
                 setMsg('Bezig met registreren...');
-                const { user } = await registerRequest(form.email.trim(), form.password);
+                const {user} = await registerRequest(form.email.trim(), form.password);
                 setMsg('Account aangemaakt en ingelogd.');
                 onSuccess?.(user);
             }
@@ -65,8 +64,8 @@ function Login({ onClose, onSuccess }) {
     return (
         <div className="login-page" onClick={onClose}>
             <div className="login-card" onClick={(e) => e.stopPropagation()}>
-                <div className="login-header">
-                    <button className="back-link" onClick={onClose} aria-label="Sluiten">
+                <header className="login-header">
+                    <button className="back-link" onClick={onClose}>
                         <svg
                             width="20"
                             height="20"
@@ -77,12 +76,12 @@ function Login({ onClose, onSuccess }) {
                             strokeLinecap="round"
                             strokeLinejoin="round"
                         >
-                            <path d="M19 12H5M12 19l-7-7 7-7" />
+                            <path d="M19 12H5M12 19l-7-7 7-7"/>
                         </svg>
                         Sluiten
                     </button>
                     <h1>{mode === 'login' ? 'Inloggen' : 'Registreren'}</h1>
-                </div>
+                </header>
 
                 <form onSubmit={submit}>
                     <div className="form-group">
@@ -92,7 +91,8 @@ function Login({ onClose, onSuccess }) {
                             type="email"
                             required
                             value={form.email}
-                            onChange={(e) => setForm({ ...form, email: e.target.value })}
+                            onChange={(e) => setForm({...form, email: e.target.value})}
+                            autoComplete="email"
                         />
                     </div>
 
@@ -103,8 +103,9 @@ function Login({ onClose, onSuccess }) {
                             type="password"
                             required
                             value={form.password}
-                            onChange={(e) => setForm({ ...form, password: e.target.value })}
+                            onChange={(e) => setForm({...form, password: e.target.value})}
                             minLength={6}
+                            autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
                         />
                     </div>
 
@@ -116,19 +117,23 @@ function Login({ onClose, onSuccess }) {
                                 type="password"
                                 required
                                 value={form.confirm}
-                                onChange={(e) => setForm({ ...form, confirm: e.target.value })}
+                                onChange={(e) => setForm({...form, confirm: e.target.value})}
                                 minLength={6}
+                                autoComplete="new-password"
                             />
                         </div>
                     )}
 
-                    <p role="status" className="status-message">
+                    <p className="status-message">
                         {msg}
                     </p>
 
-                    <button className="btn--primary" type="submit" disabled={busy}>
+                    <ButtonPrimary
+                        type="submit"
+                        disabled={busy}
+                    >
                         {busy ? 'Bezig…' : mode === 'login' ? 'Inloggen' : 'Account aanmaken'}
-                    </button>
+                    </ButtonPrimary>
 
                     <p className="footer-text">
                         {mode === 'login' ? (

@@ -80,7 +80,7 @@
     bottom: 0;
     left: 0;
     right: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
     padding: var(--sp-12);
 }
 
@@ -96,6 +96,7 @@
     font-style: italic;
     margin: 0;
 }
+
 .btn--secondary:disabled,
 .btn--secondary--disabled {
     opacity: 0.5;
@@ -103,7 +104,7 @@
     pointer-events: none;
 }
 
-
+/* Responsive */
 @media (max-width: 640px) {
     .genre-card {
         min-width: 160px;

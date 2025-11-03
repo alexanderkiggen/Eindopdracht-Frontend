@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import "./RatingGame.css";
 
-function RatingGame({ gameRating }) {
+function RatingGame({gameRating}) {
     const formatRating = (rating) => {
         if (!rating) return 'N/A';
         // RAWG rating is uit 5, dit convert het naar percentage

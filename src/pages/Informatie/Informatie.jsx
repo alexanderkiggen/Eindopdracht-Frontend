@@ -1,13 +1,14 @@
 import {useEffect, useState} from 'react';
-import {Link, useParams, useNavigate} from 'react-router-dom';
-
+import {Link, useNavigate, useParams} from 'react-router-dom';
 import axios from 'axios';
+
 import './Informatie.css';
 import ButtonPrimary from '../../components/ButtonPrimary/ButtonPrimary.jsx';
 import RatingGame from '../../components/RatingGame/RatingGame.jsx';
-import PlayStationIcon from "../../assets/icons/playstation.svg";
-import XboxIcon from "../../assets/icons/xbox.svg";
-import WindowsIcon from "../../assets/icons/windows.svg";
+import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner.jsx';
+import PlayStationIcon from "../../assets/icons/playstation.png";
+import XboxIcon from "../../assets/icons/xbox.png";
+import WindowsIcon from "../../assets/icons/windows.png";
 import NoImage from "../../assets/images/no-image.png";
 
 function Informatie() {
@@ -20,8 +21,6 @@ function Informatie() {
     const [showFullDescription, setShowFullDescription] = useState(false);
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 640);
     const [selectedScreenshot, setSelectedScreenshot] = useState(null);
-
-    const BASE_URL = import.meta.env.VITE_BASE_URL;
 
     useEffect(() => {
         const handleResize = () => setIsMobile(window.innerWidth <= 640);
@@ -43,8 +42,8 @@ function Informatie() {
 
             // Fetch game details en screenshots tegelijk
             const [gameResponse, screenshotsResponse] = await Promise.all([
-                axios.get(`${BASE_URL}/games/${game_slug}`, {params: {key: import.meta.env.VITE_API_KEY}}),
-                axios.get(`${BASE_URL}/games/${game_slug}/screenshots`, {params: {key: import.meta.env.VITE_API_KEY}})
+                axios.get(`${import.meta.env.VITE_BASE_URL}/games/${game_slug}`, {params: {key: import.meta.env.VITE_API_KEY}}),
+                axios.get(`${import.meta.env.VITE_BASE_URL}/games/${game_slug}/screenshots`, {params: {key: import.meta.env.VITE_API_KEY}})
             ]);
 
             setGame(gameResponse.data);
@@ -61,13 +60,13 @@ function Informatie() {
     const getPlatformIcon = (platformName) => {
         const name = platformName.toLowerCase();
         if (name.includes("playstation") || name.includes("ps")) {
-            return <img src={PlayStationIcon} alt="PlayStation" className="informatie-platform-icon"/>;
+            return <img src={PlayStationIcon} alt="PlayStation" className="informatie-platform-icon" loading="lazy"/>;
         }
         if (name.includes("xbox")) {
-            return <img src={XboxIcon} alt="Xbox" className="informatie-platform-icon"/>;
+            return <img src={XboxIcon} alt="Xbox" className="informatie-platform-icon" loading="lazy"/>;
         }
         if (name.includes("pc") || name.includes("windows")) {
-            return <img src={WindowsIcon} alt="PC" className="informatie-platform-icon"/>;
+            return <img src={WindowsIcon} alt="PC" className="informatie-platform-icon" loading="lazy"/>;
         }
         return null;
     };
@@ -160,34 +159,31 @@ function Informatie() {
 
     if (loading) {
         return (
-            <div className="informatie-container">
-                <div className="informatie-loading">
-                    <div>Game informatie wordt geladen...</div>
-                </div>
-            </div>
+            <main className="informatie-container">
+                <LoadingSpinner text="Game wordt geladen..."/>
+            </main>
         );
     }
 
     if (error || !game) {
         return (
-            <div className="informatie-container">
+            <main className="informatie-container" role="alert">
                 <div className="informatie-error">
                     <h2>Fout bij het laden van games</h2>
                     <p>{error || 'Game niet gevonden'}</p>
                     <ButtonPrimary onClick={() => navigate(-1)}>Terug</ButtonPrimary>
                 </div>
-            </div>
+            </main>
         );
     }
 
     return (
-        <div className="informatie-container">
-            {/* Hero Section */}
-            <div className="informatie-header">
+        <main className="informatie-container">
+            <header className="informatie-header">
                 <div className="informatie-hero">
                     <img
                         src={game.background_image || NoImage}
-                        alt={game.name}
+                        alt={`Achtergrondafbeelding van ${game.name}`}
                         className="informatie-hero__image"
                         loading="lazy"
                     />
@@ -198,26 +194,23 @@ function Informatie() {
                             <RatingGame gameRating={game.rating}/>
                             {game.genres && game.genres.length > 0 && (
                                 <span>
-                                  {game.genres.map(g => g.name).join(', ')}
+                                    {game.genres.map(g => g.name).join(', ')}
                                 </span>
                             )}
                         </div>
                     </div>
                 </div>
-            </div>
+            </header>
 
-            {/* Main Content */}
-            <div className="informatie-content">
-                <div className="informatie-main">
+            <article className="informatie-content">
+                <section className="informatie-main">
                     {/* Description Section */}
-                    <div className="informatie-section">
+                    <section className="informatie-section">
                         <h2 className="informatie-section__title">Over deze game</h2>
 
                         {(() => {
                             // Controleer of de beschrijving lang is
-                            const hasLongDescription =
-                                game.description &&
-                                game.description.replace(/<[^>]*>/g, ' ').split(' ').length > 75;
+                            const hasLongDescription = game.description && game.description.replace(/<[^>]*>/g, ' ').split(' ').length > 75;
 
                             if (isMobile && !showFullDescription && hasLongDescription) {
                                 return (
@@ -231,6 +224,8 @@ function Informatie() {
                                         <button
                                             onClick={() => setShowFullDescription(true)}
                                             className="informatie-read-more"
+                                            aria-expanded="false"
+                                            aria-controls="full-description"
                                         >
                                             Lees verder
                                         </button>
@@ -238,36 +233,37 @@ function Informatie() {
                                 );
                             }
 
-                            // volledige beschrijving
+                            // Volledige beschrijving
                             else {
                                 return (
                                     <>
                                         <div
                                             className="informatie-description"
+                                            id="full-description"
                                             dangerouslySetInnerHTML={{
                                                 __html: getDescriptionContent(),
                                             }}
                                         />
-                                        {isMobile &&
-                                            showFullDescription &&
-                                            hasLongDescription && (
-                                                <button
-                                                    onClick={() => setShowFullDescription(false)}
-                                                    className="informatie-read-more"
-                                                >
-                                                    Lees minder
-                                                </button>
-                                            )}
+                                        {isMobile && showFullDescription && hasLongDescription && (
+                                            <button
+                                                onClick={() => setShowFullDescription(false)}
+                                                className="informatie-read-more"
+                                                aria-expanded="true"
+                                                aria-controls="full-description"
+                                            >
+                                                Lees minder
+                                            </button>
+                                        )}
                                     </>
                                 );
                             }
                         })()}
-                    </div>
+                    </section>
 
 
                     {/* Screenshots Section */}
                     {screenshots.length > 0 && (
-                        <div className="informatie-section">
+                        <section className="informatie-section">
                             <h2 className="informatie-section__title">Screenshots</h2>
                             <div className="informatie-screenshots">
                                 {screenshots.slice(0, 4).map((screenshot, index) => (
@@ -281,63 +277,60 @@ function Informatie() {
                                     />
                                 ))}
                             </div>
-                        </div>
+                        </section>
                     )}
-                </div>
+                </section>
 
-                {/* Sidebar */}
-                <div className="informatie-sidebar">
+                <aside className="informatie-sidebar">
                     {/* Details Box */}
-                    <div className="informatie-info-box">
+                    <section className="informatie-info-box">
                         <h3>Details</h3>
-                        <div className="informatie-info-row">
-                            <span className="informatie-info-label">Uitgever</span>
-                            <span className="informatie-info-value">
-                {game.publishers && game.publishers.length > 0
-                    ? game.publishers[0].name
-                    : 'Onbekend'}
-              </span>
-                        </div>
-                        <div className="informatie-info-row">
-                            <span className="informatie-info-label">Ontwikkelaar</span>
-                            <span className="informatie-info-value">
-                {game.developers && game.developers.length > 0
-                    ? game.developers[0].name
-                    : 'Onbekend'}
-              </span>
-                        </div>
-                        <div className="informatie-info-row">
-                            <span className="informatie-info-label">Release datum</span>
-                            <span className="informatie-info-value">
-                {formatDate(game.released)}
-              </span>
-                        </div>
-                        <div className="informatie-info-row">
-                            <span className="informatie-info-label">Leeftijd</span>
-                            <span className="informatie-info-value">
-                {game.esrb_rating?.name || 'Niet beoordeeld'}
-              </span>
-                        </div>
-                    </div>
+                        <dl className="informatie-info-list">
+                            <div className="informatie-info-row">
+                                <dt className="informatie-info-label">Uitgever</dt>
+                                <dd className="informatie-info-value">
+                                    {game.publishers && game.publishers.length > 0 ? game.publishers[0].name : 'Onbekend'}
+                                </dd>
+                            </div>
+                            <div className="informatie-info-row">
+                                <dt className="informatie-info-label">Ontwikkelaar</dt>
+                                <dd className="informatie-info-value">
+                                    {game.developers && game.developers.length > 0 ? game.developers[0].name : 'Onbekend'}
+                                </dd>
+                            </div>
+                            <div className="informatie-info-row">
+                                <dt className="informatie-info-label">Release datum</dt>
+                                <dd className="informatie-info-value">
+                                    {formatDate(game.released)}
+                                </dd>
+                            </div>
+                            <div className="informatie-info-row">
+                                <dt className="informatie-info-label">Leeftijd</dt>
+                                <dd className="informatie-info-value">
+                                    {game.esrb_rating?.name || 'Niet beoordeeld'}
+                                </dd>
+                            </div>
+                        </dl>
+                    </section>
 
                     {/* Platforms Box */}
-                    <div className="informatie-info-box">
+                    <section className="informatie-info-box">
                         <h3>Platforms</h3>
                         <div className="informatie-platforms">
                             {game.parent_platforms?.map((platform, index) => (
                                 <span key={index} title={platform.platform.name}>
-                  {getPlatformIcon(platform.platform.name)}
-                </span>
+                                    {getPlatformIcon(platform.platform.name)}
+                                </span>
                             ))}
                         </div>
                         <div className="informatie-platforms-text">
                             {game.platforms?.map(p => p.platform.name).join(', ')}
                         </div>
-                    </div>
+                    </section>
 
                     {/* Genres Box */}
                     {game.genres && game.genres.length > 0 && (
-                        <div className="informatie-info-box">
+                        <section className="informatie-info-box">
                             <h3>Genres</h3>
                             <div className="informatie-genres">
                                 {game.genres.map(genre => (
@@ -350,12 +343,12 @@ function Informatie() {
                                     </Link>
                                 ))}
                             </div>
-                        </div>
+                        </section>
                     )}
 
                     {/* Tags Box */}
                     {game.tags && game.tags.length > 0 && (
-                        <div className="informatie-info-box">
+                        <section className="informatie-info-box">
                             <h3>Tags</h3>
                             <div className="informatie-tags">
                                 {game.tags.slice(0, 12).map(tag => (
@@ -364,12 +357,12 @@ function Informatie() {
                                     </span>
                                 ))}
                             </div>
-                        </div>
+                        </section>
                     )}
 
                     {/* Website Box */}
                     {game.website && (
-                        <div className="informatie-info-box">
+                        <section className="informatie-info-box">
                             <h3>Website</h3>
                             <a
                                 href={game.website}
@@ -379,14 +372,20 @@ function Informatie() {
                             >
                                 Bezoek officiële website
                             </a>
-                        </div>
+                        </section>
                     )}
-                </div>
-            </div>
+                </aside>
+            </article>
 
             {/* Screenshot in groot */}
             {selectedScreenshot && (
-                <div className="screenshot-modal" onClick={closeScreenshot}>
+                <div
+                    className="screenshot-modal"
+                    onClick={closeScreenshot}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label={`Screenshot van ${game.name}`}
+                >
                     <button
                         className="screenshot-modal__close"
                         onClick={closeScreenshot}
@@ -411,7 +410,7 @@ function Informatie() {
 
                     <img
                         src={selectedScreenshot.image}
-                        alt={game.name}
+                        alt={`${game.name} - Volledige afbeelding`}
                         className="screenshot-modal__image"
                         onClick={(e) => e.stopPropagation()}
                     />
@@ -430,12 +429,12 @@ function Informatie() {
                         </svg>
                     </button>
 
-                    <div className="screenshot-modal__counter">
+                    <div className="screenshot-modal__counter" aria-live="polite">
                         {screenshots.findIndex(s => s.id === selectedScreenshot.id) + 1} / {screenshots.length}
                     </div>
                 </div>
             )}
-        </div>
+        </main>
     );
 }
 

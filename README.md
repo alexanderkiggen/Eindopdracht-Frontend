@@ -102,7 +102,7 @@ De applicatie gebruikt de NOVI Dynamic API voor gebruikersbeheer en favorieten. 
 
 **Belangrijke stappen**:
 
-1. Ga naar het NOVI Dynamic API [dashboard](https://novi-backend-api-wgsgz.ondigitalocean.app/)
+1. Ga naar de NOVI Dynamic API: [Dashboard](https://novi-backend-api-wgsgz.ondigitalocean.app/)
 2. Voeg bij "API Configureren" het project ID in te vinden in het `.env` bestand onder `VITE_NOVI_PROJECT_KEY`
 3. Upload het `novi-api-config.json` bestand via de "Bestand kiezen" optie
 4. Klik vervolgens op "Upload API configuratie"
@@ -147,7 +147,7 @@ Na het uitvoeren van `npm run build` kun je de productie-versie lokaal testen me
 ## Testgebruikers
 
 
-De NOVI Dynamic API is vooraf geconfigureerd met twee testgebruikers. Je kunt direct inloggen met de volgende gegevens:
+De NOVI Dynamic API is vooraf geconfigureerd met twee testgebruikers. Er is geen verschil tussen admin en normale gebruiker accounts. Je kunt direct inloggen met onderstaande gegevens:
 
 ### Account 1:
 

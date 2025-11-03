@@ -1,4 +1,3 @@
-
 .keuzehulp-container {
     max-width: 1440px;
     margin: 0 auto;
@@ -6,19 +5,19 @@
     min-height: 650px;
 }
 
-
 /* Card */
 .keuzehulp-card {
     background: var(--color-surface);
     border-radius: var(--radius-md);
     padding: var(--sp-32);
 }
+
 .keuzehulp-header {
     text-align: center;
     margin-bottom: var(--sp-48);
 }
 
-/* LINE + DOTS progress */
+/* Lijn + rondjes */
 .keuzehulp-line-progress {
     position: relative;
     margin-bottom: var(--sp-48);
@@ -78,7 +77,8 @@
     display: flex;
     flex-direction: column;
     text-align: center;
-    margin-bottom: var(--sp-32);
+    margin-bottom: 22px;
+    border: none;
 }
 
 .keuzehulp-question__subtitle {
@@ -93,7 +93,7 @@
     flex-wrap: wrap;
     justify-content: center;
     gap: var(--sp-16);
-    padding-bottom: var(--sp-48);
+    padding-bottom: var(--sp-32);
     border-bottom: 1px solid var(--color-neutral);
 }
 
@@ -268,6 +268,7 @@
     .keuzehulp-layout {
         grid-template-columns: 1fr;
     }
+
     .keuzehulp-info-card__body {
         margin-left: var(--sp-16);
     }
@@ -277,6 +278,7 @@
     .keuzehulp-container {
         padding: var(--sp-48) var(--sp-16);
     }
+
     .keuzehulp-layout {
         gap: var(--sp-16);
     }
@@ -289,11 +291,13 @@
         padding: var(--sp-16);
         flex-direction: column;
     }
+
     .keuzehulp-info-card__img {
         height: auto;
         width: 120px;
         aspect-ratio: 1 / 1;
     }
+
     .keuzehulp-info-card__body {
         margin-left: 0;
     }

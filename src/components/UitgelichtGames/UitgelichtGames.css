@@ -76,7 +76,6 @@
     font-size: var(--fs-14);
 }
 
-.loading-container,
 .error-container {
     display: flex;
     justify-content: center;
@@ -97,6 +96,7 @@
     margin-bottom: var(--sp-24);
 }
 
+/* Responsive */
 @media (max-width: 1080px) {
     .highlighted-games-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -121,5 +121,12 @@
 
     .highlighted-games-section {
         padding: var(--sp-24) 0;
+    }
+
+    .highlighted-games-grid .game-card p {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 13ch;
     }
 }

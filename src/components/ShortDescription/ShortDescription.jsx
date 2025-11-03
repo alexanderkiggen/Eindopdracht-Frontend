@@ -1,7 +1,7 @@
-import { useState } from "react";
+import {useState} from "react";
 import "./ShortDescription.css";
 
-function ShortDescription({ text, maxLength }) {
+function ShortDescription({text, maxLength}) {
     const [showMore, setShowMore] = useState(false);
 
     const words = text.trim().split(/\s+/);
@@ -14,18 +14,18 @@ function ShortDescription({ text, maxLength }) {
     };
 
     return (
-        <div className="short-description">
+        <section className="short-description">
             <p>
                 {shortText}
                 {!showMore && words.length > parseInt(maxLength) && <span>... </span>}
                 {showMore && <span> {remainingText} {" "}</span>}
                 {words.length > parseInt(maxLength) && (
-                    <a onClick={toggleReadMore} className="leesmeer-link" href="#">
+                    <button onClick={toggleReadMore} className="leesmeer-link">
                         {showMore ? "Lees Minder" : "Lees Meer"}
-                    </a>
+                    </button>
                 )}
             </p>
-        </div>
+        </section>
     );
 }
 

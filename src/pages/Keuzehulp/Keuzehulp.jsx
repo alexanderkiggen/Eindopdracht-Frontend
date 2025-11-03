@@ -73,8 +73,7 @@ function Keuzehulp() {
         const cur = answers[q.id] || [];
         if (cur.length === 0) return;
 
-        if (currentStep < questions.length - 1) setCurrentStep(s => s + 1);
-        else setIsComplete(true);
+        if (currentStep < questions.length - 1) setCurrentStep(s => s + 1); else setIsComplete(true);
     };
 
     const handlePrevious = () => {
@@ -108,48 +107,42 @@ function Keuzehulp() {
 
     if (isComplete) {
         return (
-            <div className="keuzehulp-container">
-                <div className="keuzehulp-complete">
-                    <div className="keuzehulp-complete__icon">✓</div>
-                    <h1>Jouw perfecte game</h1>
+            <main className="keuzehulp-container">
+                <section className="keuzehulp-complete">
+                    <div className="keuzehulp-complete__icon" aria-hidden="true">✓</div>
+                    <h1>Jouw perfecte game is gevonden!</h1>
                     <p>Op basis van jouw voorkeuren hebben we de beste games geselecteerd.</p>
 
-                    <div className="keuzehulp-summary">
+                    <dl className="keuzehulp-summary">
                         <h3>Jouw keuzes</h3>
 
-                        {answers.genre?.length > 0 && (
-                            <div className="keuzehulp-summary__row">
-                                <span className="keuzehulp-summary__label">Genre</span>
-                                <span className="keuzehulp-summary__value">
+                        {answers.genre?.length > 0 && (<div className="keuzehulp-summary__row">
+                                <dt className="keuzehulp-summary__label">Genre</dt>
+                                <dd className="keuzehulp-summary__value">
                                     {questions[0].options.find(o => o.value === answers.genre[0])?.label}
-                                </span>
-                            </div>
-                        )}
+                                </dd>
+                            </div>)}
 
-                        {answers.platform?.length > 0 && (
-                            <div className="keuzehulp-summary__row">
-                                <span className="keuzehulp-summary__label">Platform</span>
-                                <span className="keuzehulp-summary__value">
+                        {answers.platform?.length > 0 && (<div className="keuzehulp-summary__row">
+                                <dt className="keuzehulp-summary__label">Platform</dt>
+                                <dd className="keuzehulp-summary__value">
                                     {answers.platform.map(p => {
                                         const option = questions[1].options.find(o => o.value === p);
                                         return option?.label;
                                     }).join(', ')}
-                                </span>
-                            </div>
-                        )}
+                                </dd>
+                            </div>)}
 
-                        {answers.playStyle?.length > 0 && (
-                            <div className="keuzehulp-summary__row">
-                                <span className="keuzehulp-summary__label">Speelstijl</span>
-                                <span className="keuzehulp-summary__value">
+                        {answers.playStyle?.length > 0 && (<div className="keuzehulp-summary__row">
+                                <dt className="keuzehulp-summary__label">Speelstijl</dt>
+                                <dd className="keuzehulp-summary__value">
                                     {answers.playStyle.map(ps => {
                                         const option = questions[2].options.find(o => o.value === ps);
                                         return option?.label;
                                     }).join(', ')}
-                                </span>
-                            </div>
-                        )}
-                    </div>
+                                </dd>
+                            </div>)}
+                    </dl>
 
                     <div className="keuzehulp-complete__actions">
                         <ButtonSecondary onClick={handleReset}>
@@ -159,27 +152,25 @@ function Keuzehulp() {
                             Bekijk aanbevolen games
                         </ButtonPrimary>
                     </div>
-                </div>
-            </div>
+                </section>
+            </main>
         );
     }
 
     return (
-        <div className="keuzehulp-container">
+        <main className="keuzehulp-container">
             <div className="keuzehulp-layout">
                 <aside className="keuzehulp-left">
                     <h1>Keuzehulp</h1>
                     <ShortDescription
                         maxLength={30}
-                        text={
-                            "Deze slimme keuzehulp vertaalt jouw persoonlijke voorkeuren naar unieke aanbevelingen. Selecteer eenvoudig je favoriete genre, platform en speelstijl, waarna het systeem automatisch een selectie toont op de ontdekken pagina die aansluit bij jouw speelgedrag en interesses. Ontdek titels en verfijn je resultaten met één klik. Zo vind je moeiteloos de game die perfect past bij jouw manier van spelen."
-                        }
+                        text={"Deze slimme keuzehulp vertaalt jouw persoonlijke voorkeuren naar unieke aanbevelingen. Selecteer eenvoudig je favoriete genre, platform en speelstijl, waarna het systeem automatisch een selectie toont op de ontdekken pagina die aansluit bij jouw speelgedrag en interesses. Ontdek titels en verfijn je resultaten met één klik. Zo vind je moeiteloos de game die perfect past bij jouw manier van spelen."}
                     />
 
                     <div className="keuzehulp-info-card">
                         <img
                             src={KeuzehulpImg}
-                            alt="keuzehulp afbeelding"
+                            alt="Visuele weergave van de keuzehulp"
                             className="keuzehulp-info-card__img"
                         />
                         <div className="keuzehulp-info-card__body">
@@ -190,15 +181,15 @@ function Keuzehulp() {
                             </p>
                             <ul className="keuzehulp-info-card__list">
                                 <li>
-                                    <span className="keuzehulp-check">✓</span>
+                                    <span className="keuzehulp-check" aria-hidden="true">✓</span>
                                     <span><strong>Stap 1:</strong> Kies je genre.</span>
                                 </li>
                                 <li>
-                                    <span className="keuzehulp-check">✓</span>
+                                    <span className="keuzehulp-check" aria-hidden="true">✓</span>
                                     <span><strong>Stap 2:</strong> Selecteer je platform(s).</span>
                                 </li>
                                 <li>
-                                    <span className="keuzehulp-check">✓</span>
+                                    <span className="keuzehulp-check" aria-hidden="true">✓</span>
                                     <span><strong>Stap 3:</strong> Bepaal je speelstijl.</span>
                                 </li>
                             </ul>
@@ -206,22 +197,31 @@ function Keuzehulp() {
                     </div>
                 </aside>
 
-                <section className="keuzehulp-right">
+                <section className="keuzehulp-right" role="form" aria-live="polite">
                     <div className="keuzehulp-card">
-                        <div className="keuzehulp-header">
+                        <header className="keuzehulp-header">
                             <h2>Zoek uw perfecte game</h2>
                             <p>Uw nieuwe favoriete game is dichterbij dan u denkt!</p>
-                        </div>
+                        </header>
 
-                        <div className="keuzehulp-line-progress">
+                        <div
+                            className="keuzehulp-line-progress"
+                            role="progressbar"
+                            aria-valuenow={currentStep}
+                            aria-valuemin="0"
+                            aria-valuemax={questions.length}
+                            aria-label={`Voortgang: Stap ${currentStep + 1} van ${questions.length}`}
+                        >
                             <div className="keuzehulp-line-progress__rail">
-                                <div className="keuzehulp-line-progress__fill" style={{ width: `${progressPct}%` }} />
+                                <div className="keuzehulp-line-progress__fill" style={{width: `${progressPct}%`}}/>
                             </div>
                             <div className="keuzehulp-line-progress__dots">
                                 {Array.from({length: visualStepsTotal}).map((_, i) => (
                                     <div
                                         key={i}
                                         className={`keuzehulp-dot ${i <= currentStep ? 'keuzehulp-dot--active' : ''} ${i === currentStep ? 'keuzehulp-dot--current' : ''}`}
+                                        aria-current={i === currentStep ? 'step' : undefined}
+                                        aria-label={`Stap ${i + 1}`}
                                     >
                                         {i + 1}
                                     </div>
@@ -229,9 +229,11 @@ function Keuzehulp() {
                             </div>
                         </div>
 
-                        <div className="keuzehulp-question">
-                            <h3>{currentQuestion.question}</h3>
-                            <p className="keuzehulp-question__subtitle">{currentQuestion.subtitle}</p>
+                        <fieldset className="keuzehulp-question">
+                            <legend className="keuzehulp-question__legend">
+                                <h3>{currentQuestion.question}</h3>
+                                <p className="keuzehulp-question__subtitle">{currentQuestion.subtitle}</p>
+                            </legend>
 
                             <div className="keuzehulp-options">
                                 {currentQuestion.options.map(option => (
@@ -239,15 +241,16 @@ function Keuzehulp() {
                                         key={option.value}
                                         className={`keuzehulp-option ${currentAnswers.includes(option.value) ? 'keuzehulp-option--selected' : ''}`}
                                         onClick={() => handleAnswer(currentQuestion.id, option.value)}
+                                        aria-pressed={currentAnswers.includes(option.value)}
                                     >
-                                        <span className="keuzehulp-option__check">
+                                        <span className="keuzehulp-option__check" aria-hidden="true">
                                             {currentAnswers.includes(option.value) && '✓'}
                                         </span>
                                         <span className="keuzehulp-option__label">{option.label}</span>
                                     </button>
                                 ))}
                             </div>
-                        </div>
+                        </fieldset>
 
                         <div className="keuzehulp-navigation">
                             <ButtonSecondary onClick={handlePrevious} disabled={currentStep === 0}>
@@ -260,7 +263,7 @@ function Keuzehulp() {
                     </div>
                 </section>
             </div>
-        </div>
+        </main>
     );
 }
 

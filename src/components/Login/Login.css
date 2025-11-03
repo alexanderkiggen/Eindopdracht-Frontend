@@ -106,6 +106,7 @@ form {
 .footer-text {
     font-size: var(--fs-14);
 }
+
 .toggle-link {
     color: var(--color-accent);
     background: none;
@@ -119,6 +120,7 @@ form {
     color: var(--color-accent-hover);
 }
 
+/* Responsive */
 @media (max-width: 640px) {
     .footer-text {
         font-size: var(--fs-12);

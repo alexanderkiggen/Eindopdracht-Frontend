@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import {useEffect, useState} from 'react';
 import './FilterSection.css';
 
-function FilterSection({ selectedGenre, selectedPlatform, selectedFeatures, onFilterChange }) {
+function FilterSection({selectedGenre, selectedPlatform, selectedFeatures, onFilterChange}) {
     const [openSection, setOpenSection] = useState(() => {
         return localStorage.getItem('openSection');
     });
@@ -89,11 +89,8 @@ function FilterSection({ selectedGenre, selectedPlatform, selectedFeatures, onFi
     return (
         <aside className="filter-section">
             <div className="filter-section__header">
-                <h3>Filters ({
-                    (selectedGenre ? 1 : 0) +
-                    (selectedPlatform ? selectedPlatform.split(',').length : 0) +
-                    (checkedFeatures.length)
-                })</h3>
+                <h3>Filters
+                    ({(selectedGenre ? 1 : 0) + (selectedPlatform ? selectedPlatform.split(',').length : 0) + (checkedFeatures.length)})</h3>
             </div>
 
             {/* Genre Filter */}
@@ -107,8 +104,7 @@ function FilterSection({ selectedGenre, selectedPlatform, selectedFeatures, onFi
                         {openSection === 'genre' ? '▼' : '▶'}
                     </span>
                 </button>
-                {openSection === 'genre' && (
-                    <div className="filter-group__content">
+                {openSection === 'genre' && (<div className="filter-group__content">
                         {genres.map((genre) => (
                             <label key={genre.slug} className="filter-checkbox">
                                 <input
@@ -136,8 +132,7 @@ function FilterSection({ selectedGenre, selectedPlatform, selectedFeatures, onFi
                         {openSection === 'platform' ? '▼' : '▶'}
                     </span>
                 </button>
-                {openSection === 'platform' && (
-                    <div className="filter-group__content">
+                {openSection === 'platform' && (<div className="filter-group__content">
                         {platforms.map((platform) => {
                             const currentPlatforms = selectedPlatform ? selectedPlatform.split(',') : [];
                             return (

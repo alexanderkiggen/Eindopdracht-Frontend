@@ -1,7 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import axios from 'axios';
+
 import './HeaderPopularGames.css';
 import ButtonPrimary from "../ButtonPrimary/ButtonPrimary";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
+import NoImage from "../../assets/images/no-image.png";
 
 const HeaderPopularGames = () => {
     const [featuredGame, setFeaturedGame] = useState(null);
@@ -14,8 +17,6 @@ const HeaderPopularGames = () => {
 
     const intervalRef = useRef(null);
     const progressIntervalRef = useRef(null);
-
-    const BASE_URL = import.meta.env.VITE_BASE_URL;
 
     const CYCLE_DURATION = 25000;
     const PROGRESS_UPDATE_INTERVAL = 100;
@@ -53,11 +54,9 @@ const HeaderPopularGames = () => {
             setError(null);
 
             // Haal all time top 5 games op
-            const response = await axios.get(`${BASE_URL}/games`, {
+            const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/games`, {
                 params: {
-                    key: import.meta.env.VITE_API_KEY,
-                    ordering: '-added',
-                    page_size: 5
+                    key: import.meta.env.VITE_API_KEY, ordering: '-added', page_size: 5
                 }
             });
 
@@ -67,7 +66,7 @@ const HeaderPopularGames = () => {
                 // Eerste game als default featured game
                 loadFeaturedGame(response.data.results[0]);
             } else {
-                throw new Error('Geen games gevonden');
+                console.error('Geen games gevonden');
             }
 
         } catch (err) {
@@ -87,18 +86,16 @@ const HeaderPopularGames = () => {
         }
 
         try {
-            const response = await axios.get(`${BASE_URL}/games/${game.id}`, {
+            const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/games/${game.id}`, {
                 params: {
                     key: import.meta.env.VITE_API_KEY
                 }
             });
 
             // Update featuredGame + opslaan in topGames array
-            const updatedGame = { ...game, description: response.data.description_raw };
+            const updatedGame = {...game, description: response.data.description_raw};
             setFeaturedGame(updatedGame);
-            setTopGames(prevGames =>
-                prevGames.map(g => g.id === game.id ? updatedGame : g)
-            );
+            setTopGames(prevGames => prevGames.map(g => g.id === game.id ? updatedGame : g));
         } catch (err) {
             console.error(err);
             setFeaturedGame(game);
@@ -114,9 +111,7 @@ const HeaderPopularGames = () => {
         // Start game cycling interval
         intervalRef.current = setInterval(() => {
             if (!isPaused) {
-                setCurrentGameIndex(prevIndex =>
-                    (prevIndex + 1) % topGames.length
-                );
+                setCurrentGameIndex(prevIndex => (prevIndex + 1) % topGames.length);
             }
         }, CYCLE_DURATION);
 
@@ -164,9 +159,7 @@ const HeaderPopularGames = () => {
     if (loading) {
         return (
             <main className="main-content">
-                <div className="loading-container">
-                    <div>Top games worden geladen...</div>
-                </div>
+                <LoadingSpinner text="Top games worden geladen..."/>
             </main>
         );
     }
@@ -194,11 +187,11 @@ const HeaderPopularGames = () => {
                         onMouseLeave={resumeCycling}
                     >
                         <img
-                            src={featuredGame.background_image || '/api/placeholder/800/400'}
-                            alt={featuredGame.name}
+                            src={featuredGame.background_image || NoImage}
+                            alt={`Achtergrondafbeelding van ${featuredGame.name}`}
                             loading="lazy"
                         />
-                        <div className="featured-game__overlay"></div>
+                        <div className="featured-game__overlay"/>
                         <div className="featured-game__content">
                             <h2>{featuredGame.name}</h2>
                             <p>
@@ -215,7 +208,7 @@ const HeaderPopularGames = () => {
             {/* Top Games Section */}
             <aside className="highlighted-games">
                 {topGames.map((game, index) => (
-                    <div
+                    <button
                         key={game.id}
                         className={`game-card ${currentGameIndex === index ? 'active' : ''}`}
                         onClick={() => handleGameClick(game, index)}
@@ -224,8 +217,8 @@ const HeaderPopularGames = () => {
                     >
                         <div className="game-card__content">
                             <img
-                                src={game.background_image || '/api/placeholder/140/80'}
-                                alt={game.name}
+                                src={game.background_image || NoImage}
+                                alt={`Thumbnail van ${game.name}`}
                                 loading="lazy"
                             />
                             <p>{game.name}</p>
@@ -234,11 +227,11 @@ const HeaderPopularGames = () => {
                             <div className="progress-bar">
                                 <div
                                     className="progress-fill"
-                                    style={{ width: `${progress}%` }}
-                                ></div>
+                                    style={{width: `${progress}%`}}
+                                />
                             </div>
                         )}
-                    </div>
+                    </button>
                 ))}
             </aside>
         </main>
